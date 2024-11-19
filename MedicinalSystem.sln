@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{39D81370-F478-49AB-B1FA-46F2543C06B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinalSystem.Web", "Presentation\MedicinalSystem.Web\MedicinalSystem.Web.csproj", "{F03BB5BC-F4CF-4AD1-B5C4-7D8DC4ACDB38}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{DA69377B-D956-4137-B27B-7DB3336D9D9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinalSystem.Infrastructure", "Infrastructure\MedicinalSystem.Infrastructure\MedicinalSystem.Infrastructure.csproj", "{D267B1E2-A243-4239-80A6-A08078BBA982}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1969811A-BA48-46BE-A4E3-4F3571A33D4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinalSystem.Application", "Core\MedicinalSystem.Application\MedicinalSystem.Application.csproj", "{A8178BF3-36AE-4083-A93B-C0AE311238F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinalSystem.Domain", "Core\MedicinalSystem.Domain\MedicinalSystem.Domain.csproj", "{A1F21F47-160C-4869-B4D7-2508C24E4F32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{784A8630-9C06-470D-A751-0C658A4BBD4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinalSystem.Tests", "Tests\MedicinalSystem.Tests\MedicinalSystem.Tests.csproj", "{33A3A643-1237-4345-98E6-84CA3A714066}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F03BB5BC-F4CF-4AD1-B5C4-7D8DC4ACDB38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F03BB5BC-F4CF-4AD1-B5C4-7D8DC4ACDB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F03BB5BC-F4CF-4AD1-B5C4-7D8DC4ACDB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F03BB5BC-F4CF-4AD1-B5C4-7D8DC4ACDB38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D267B1E2-A243-4239-80A6-A08078BBA982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D267B1E2-A243-4239-80A6-A08078BBA982}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D267B1E2-A243-4239-80A6-A08078BBA982}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D267B1E2-A243-4239-80A6-A08078BBA982}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8178BF3-36AE-4083-A93B-C0AE311238F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8178BF3-36AE-4083-A93B-C0AE311238F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8178BF3-36AE-4083-A93B-C0AE311238F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8178BF3-36AE-4083-A93B-C0AE311238F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1F21F47-160C-4869-B4D7-2508C24E4F32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1F21F47-160C-4869-B4D7-2508C24E4F32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1F21F47-160C-4869-B4D7-2508C24E4F32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1F21F47-160C-4869-B4D7-2508C24E4F32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33A3A643-1237-4345-98E6-84CA3A714066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33A3A643-1237-4345-98E6-84CA3A714066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33A3A643-1237-4345-98E6-84CA3A714066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33A3A643-1237-4345-98E6-84CA3A714066}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F03BB5BC-F4CF-4AD1-B5C4-7D8DC4ACDB38} = {39D81370-F478-49AB-B1FA-46F2543C06B5}
+		{D267B1E2-A243-4239-80A6-A08078BBA982} = {DA69377B-D956-4137-B27B-7DB3336D9D9C}
+		{A8178BF3-36AE-4083-A93B-C0AE311238F7} = {1969811A-BA48-46BE-A4E3-4F3571A33D4B}
+		{A1F21F47-160C-4869-B4D7-2508C24E4F32} = {1969811A-BA48-46BE-A4E3-4F3571A33D4B}
+		{33A3A643-1237-4345-98E6-84CA3A714066} = {784A8630-9C06-470D-A751-0C658A4BBD4D}
+	EndGlobalSection
+EndGlobal
