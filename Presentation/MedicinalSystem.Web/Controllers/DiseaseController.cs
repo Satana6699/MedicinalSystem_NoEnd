@@ -52,7 +52,7 @@ public class DiseaseController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] DiseaseForUpdateDto? disease)
+    public async Task<IActionResult> Update(Guid id, [FromBody] [Bind("Id,Name,Duration,Symptoms,Consequences")] DiseaseForUpdateDto? disease)
     {
         if (disease is null)
         {

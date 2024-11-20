@@ -1,0 +1,17 @@
+﻿@page
+@{
+    Layout = "~/Pages/Shared/Layout.cshtml"; // Указываем путь к макету
+    ViewData["Title"] = "Diseases List";
+}
+<link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
+
+<div id="diseases-container">
+    <!-- Данные будут загружены сюда через JS -->
+</div>
+<div id="diseaseModal" class="modal">
+    <div class="modal-content">
+        <!-- Здесь будет содержимое для отображения подробностей болезни -->
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<script rel="stylesheet" src="~/js/diseases.js" asp-append-version="true"></script>
