@@ -1,6 +1,6 @@
-﻿function editRowDisease(editButton) {
+﻿function editRowSymptom(editButton) {
     const row = editButton.closest('tr');
-    const cells = row.querySelectorAll('td[contenteditable]');
+    const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions')); // Исключаем столбец действий
     const isEditing = row.classList.contains('editing');
 
     if (isEditing) {
@@ -8,18 +8,16 @@
         const id = row.dataset.id;
         const updatedData = {
             id: id,
-            name: cells[0].innerText.trim(),
-            duration: cells[1].innerText.trim(),
-            symptoms: cells[2].innerText.trim(),
-            consequences: cells[3].innerText.trim()
+            name: cells[0].innerText.trim()
         };
 
-        saveChangesDisease(id, updatedData, row);
+        saveChangesSymptom(id, updatedData, row);
     } else {
         // Начало редактирования
         row.classList.add('editing');
-        row.dataset.originalData = JSON.stringify(Array.from(cells).map(cell => cell.innerText.trim()));
-        cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+        row.dataset.originalData = JSON.stringify(cells.map(cell => cell.innerText.trim()));
+
+        cells.forEach(cell => cell.setAttribute('contenteditable', 'true')); // Только данные можно редактировать
         editButton.innerHTML = '<i class="bi bi-check-circle-fill"></i>'; // Иконка сохранения
         editButton.title = "Save";
 
@@ -28,12 +26,12 @@
         cancelButton.innerHTML = '<i class="bi bi-x-circle-fill"></i>'; // Иконка крестика
         cancelButton.title = "Cancel";
         cancelButton.className = "cancel-button";
-        cancelButton.onclick = () => cancelEditingDisease(row);
-        row.querySelector('td:last-child').appendChild(cancelButton);
+        cancelButton.onclick = () => cancelEditingSymptom(row);
+        row.querySelector('td.actions').appendChild(cancelButton); // Кнопка отмены только в actions
     }
 }
 
-async function saveChangesDisease(id, updatedData, row) {
+async function saveChangesSymptom(id, updatedData, row) {
     try {
         await axios.put(`${apiBaseUrl}/${id}`, updatedData);
         row.classList.remove('editing');
@@ -46,6 +44,10 @@ async function saveChangesDisease(id, updatedData, row) {
 
         // Удаляем кнопку отмены
         const cancelButton = row.querySelector('.cancel-button');
+
+        //ОБНОВЛЕНИЕ СТРАНИЦЫ
+        location.reload();
+
         if (cancelButton) cancelButton.remove();
     } catch (error) {
         console.error("Error saving changes:", error);
@@ -53,7 +55,7 @@ async function saveChangesDisease(id, updatedData, row) {
     }
 }
 
-function cancelEditingDisease(row) {
+function cancelEditingSymptom(row) {
     const cells = row.querySelectorAll('td[contenteditable]');
     const originalData = JSON.parse(row.dataset.originalData);
 

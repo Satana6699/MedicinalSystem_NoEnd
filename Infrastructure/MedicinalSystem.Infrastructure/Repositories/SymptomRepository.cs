@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MedicinalSystem.Domain.Entities;
+using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Domain.Abstractions;
 
 namespace MedicinalSystem.Infrastructure.Repositories;
@@ -25,5 +26,22 @@ public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
     public void Update(Symptom entity) => _dbContext.Symptoms.Update(entity);
 
     public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+    public async Task<int> CountAsync()
+    {
+        return await _dbContext.Symptoms.CountAsync();
+    }
+
+    public async Task<IEnumerable<Symptom>> GetSymptomsAsync(int page, int pageSize)
+    {
+        return await _dbContext.Symptoms    
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(symptom => new Symptom
+            {
+                Id = symptom.Id,
+                Name = symptom.Name
+            })
+            .ToListAsync();
+    }
 }
 

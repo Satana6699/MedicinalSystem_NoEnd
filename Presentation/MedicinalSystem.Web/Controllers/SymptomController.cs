@@ -17,12 +17,26 @@ public class SymptomController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get()
-    {
-        var symptoms = await _mediator.Send(new GetSymptomsQuery());
+    //[HttpGet]
+    //public async Task<IActionResult> Get()
+    //{
+    //    var symptoms = await _mediator.Send(new GetSymptomsQuery());
 
-        return Ok(symptoms);
+    //    return Ok(symptoms);
+    //}
+
+    [HttpGet]
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    {
+        if (page < 1 || pageSize < 1)
+        {
+            return BadRequest("Page and pageSize must be greater than zero.");
+        }
+
+        var query = new GetSymptomsQuery(page, pageSize);
+        var result = await _mediator.Send(query);
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
