@@ -3,10 +3,11 @@ using AutoMapper;
 using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Domain.Abstractions;
 using MedicinalSystem.Application.Requests.Queries;
+using MedicinalSystem.Domain.Entities;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers;
 
-public class GetSymptomsQueryHandler : IRequestHandler<GetSymptomsQuery, IEnumerable<SymptomDto>>
+public class GetSymptomsQueryHandler : IRequestHandler<GetSymptomsQuery, PagedResult<SymptomDto>>
 {
 	private readonly ISymptomRepository _repository;
 	private readonly IMapper _mapper;
@@ -17,6 +18,15 @@ public class GetSymptomsQueryHandler : IRequestHandler<GetSymptomsQuery, IEnumer
 		_mapper = mapper;
 	}
 
-	public async Task<IEnumerable<SymptomDto>> Handle(GetSymptomsQuery request, CancellationToken cancellationToken) => 
-		_mapper.Map<IEnumerable<SymptomDto>>(await _repository.Get(trackChanges: false));
+	//public async Task<IEnumerable<SymptomDto>> Handle(GetSymptomsQuery request, CancellationToken cancellationToken) => 
+	//	_mapper.Map<IEnumerable<SymptomDto>>(await _repository.Get(trackChanges: false));
+
+    public async Task<PagedResult<SymptomDto>> Handle(GetSymptomsQuery request, CancellationToken cancellationToken)
+    {
+        var totalItems = await _repository.CountAsync(request.Name);
+        var symptoms = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
+        
+        var items = _mapper.Map<IEnumerable<SymptomDto>>(symptoms);
+        return new PagedResult<SymptomDto>(items, totalItems, request.Page, request.PageSize);
+    }
 }

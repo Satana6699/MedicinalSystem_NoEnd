@@ -26,11 +26,15 @@ public class SymptomControllerTests
     {
         // Arrange
         var symptoms = new List<SymptomDto> { new(), new() };
+        var pagedResult = new PagedResult<SymptomDto>(symptoms, symptoms.Count, 1, 10);
+        
+        //_mediatorMock
+        //    .Setup(m => m.Send(new GetSymptomsQuery(), CancellationToken.None))
+        //    .ReturnsAsync(symptoms);
 
         _mediatorMock
-            .Setup(m => m.Send(new GetSymptomsQuery(), CancellationToken.None))
-            .ReturnsAsync(symptoms);
-
+            .Setup(m => m.Send(It.IsAny<GetSymptomsQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(pagedResult);
         // Act
         var result = await _controller.Get();
 

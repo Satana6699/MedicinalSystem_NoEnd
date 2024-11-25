@@ -1,13 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using MedicinalSystem.Domain.Entities;
+using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Domain.Abstractions;
+using Azure.Core;
+using Bogus.DataSets;
 
 namespace MedicinalSystem.Infrastructure.Repositories;
 
 public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
-
+    public IQueryable<Symptom> Query()
+    {
+        return _dbContext.Symptoms.AsQueryable();
+    }
     public async Task Create(Symptom entity) => await _dbContext.Symptoms.AddAsync(entity);
 
     public async Task<IEnumerable<Symptom>> Get(bool trackChanges) =>
@@ -25,5 +31,31 @@ public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
     public void Update(Symptom entity) => _dbContext.Symptoms.Update(entity);
 
     public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+    public async Task<int> CountAsync(string? name)
+    {
+        var symptoms = await _dbContext.Symptoms.ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            symptoms = symptoms.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        return symptoms.Count();
+    }
+
+    public async Task<IEnumerable<Symptom>> GetPageAsync(int page, int pageSize, string? name)
+    {
+        var symptoms = await _dbContext.Symptoms.ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            symptoms = symptoms.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        
+        return symptoms.Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(symptom => new Symptom
+            {
+                Id = symptom.Id,
+                Name = symptom.Name
+            }); ;
+    }
 }
 

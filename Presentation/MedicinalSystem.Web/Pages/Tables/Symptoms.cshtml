@@ -1,0 +1,27 @@
+﻿@page
+@{
+    Layout = "~/Pages/Shared/Layout.cshtml"; // Указываем путь к макету
+    ViewData["Title"] = "Symptoms List";
+}
+
+@* <div id="filter-container"> *@
+@*     <input type="text" id="filter-name" placeholder="Filter by symptom name"/> *@
+@*     <button onclick="applyFilters()"> Apply Filters</button> *@
+@* </div> *@
+<div id="filter-container">
+    <label for="filter-disease">Filter by symptom name:</label>
+    <input type="text" id="filter-name" oninput="applyFilters()">
+</div>
+<div id="symptoms-container">
+    <!-- Данные будут загружены сюда через JS -->
+</div>
+<div id="symptomModal" class="modal">
+    <div class="modal-content">
+        <!-- Здесь будет содержимое для отображения подробностей -->
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<script rel="stylesheet" src="~/js/symptoms/get.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/symptoms/edit.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/symptoms/create.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/symptoms/delete_and_info.js" asp-append-version="true"></script>

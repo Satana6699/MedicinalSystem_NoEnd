@@ -3,6 +3,7 @@
 using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Application.Requests.Queries;
 using MedicinalSystem.Application.Requests.Commands;
+using Bogus.DataSets;
 
 namespace MedicinalSystem.Web.Controllers;
 
@@ -18,9 +19,16 @@ public class DiseaseSymptomController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? nameDisease = null, [FromQuery] string? nameSymptom = null)
     {
-        var diseaseSymptoms = await _mediator.Send(new GetDiseaseSymptomsQuery());
+        if (page < 1 || pageSize < 1)
+        {
+            return BadRequest("Page and pageSize must be greater than zero.");
+        }
+        var diseaseSymptoms = await _mediator.Send(new GetDiseaseSymptomsQuery(page, pageSize, nameDisease, nameSymptom));
+
+        var query = new GetDiseaseSymptomsQuery(page, pageSize, nameDisease, nameSymptom);
+        var result = await _mediator.Send(query);
 
         return Ok(diseaseSymptoms);
     }
