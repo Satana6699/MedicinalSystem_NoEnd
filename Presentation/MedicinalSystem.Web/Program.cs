@@ -70,8 +70,8 @@ app.MapControllers();
 // »спользуем Razor Pages
 app.MapRazorPages();
 
-app.MapFallbackToPage("/Home/Index"); // ”казывает на страницу Home.cshtml как начальную
 app.MapGet("/", () => Results.Redirect("/Home/Index"));
+app.MapFallbackToPage("/Home/Index"); // ”казывает на страницу Home.cshtml как начальную
 
 //app.MapControllerRoute(
 //    name: "default",

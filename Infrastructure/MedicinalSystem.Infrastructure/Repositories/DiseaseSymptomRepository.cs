@@ -25,5 +25,36 @@ public class DiseaseSymptomRepository(AppDbContext dbContext) : IDiseaseSymptomR
     public void Update(DiseaseSymptom entity) => _dbContext.DiseaseSymptoms.Update(entity);
 
     public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+    public async Task<int> CountAsync(string? nameDisease, string? nameSymptom)
+    {
+        var diseaseSymptoms = await _dbContext.DiseaseSymptoms.Include(d => d.Disease).Include(s => s.Symptom).ToListAsync();
+        if (!string.IsNullOrWhiteSpace(nameDisease))
+        {
+            diseaseSymptoms = diseaseSymptoms.Where(s => s.Disease.Name.Contains(nameDisease, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(nameSymptom))
+        {
+            diseaseSymptoms = diseaseSymptoms.Where(s => s.Symptom.Name.Contains(nameSymptom, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        return diseaseSymptoms.Count();
+    }
+
+    public async Task<IEnumerable<DiseaseSymptom>> GetPageAsync(int page, int pageSize, string? nameDisease, string? nameSymptom)
+    {
+        var diseaseSymptoms = await _dbContext.DiseaseSymptoms.Include(d => d.Disease).Include(s => s.Symptom).ToListAsync();
+
+        if (!string.IsNullOrWhiteSpace(nameDisease))
+        {
+            diseaseSymptoms = diseaseSymptoms.Where(s => s.Disease.Name.Contains(nameDisease, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(nameSymptom))
+        {
+            diseaseSymptoms = diseaseSymptoms.Where(s => s.Symptom.Name.Contains(nameSymptom, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        diseaseSymptoms = diseaseSymptoms.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        return diseaseSymptoms;
+    }
 }
 

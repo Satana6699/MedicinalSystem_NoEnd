@@ -26,10 +26,11 @@ public class DiseaseSymptomControllerTests
     {
         // Arrange
         var diseaseSymptoms = new List<DiseaseSymptomDto> { new(), new() };
+        var pagedResult = new PagedResult<DiseaseSymptomDto>(diseaseSymptoms, diseaseSymptoms.Count, 1, 10);
 
         _mediatorMock
-            .Setup(m => m.Send(new GetDiseaseSymptomsQuery(), CancellationToken.None))
-            .ReturnsAsync(diseaseSymptoms);
+            .Setup(m => m.Send(It.IsAny<GetDiseaseSymptomsQuery>(), CancellationToken.None))
+            .ReturnsAsync(pagedResult); // Çהוסü ןונוהא¸ל PagedResult, א םו List
 
         // Act
         var result = await _controller.Get();
@@ -41,12 +42,14 @@ public class DiseaseSymptomControllerTests
         var okResult = result as OkObjectResult;
         okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
 
-        var value = okResult?.Value as List<DiseaseSymptomDto>;
-        value.Should().HaveCount(2);
-        value.Should().BeEquivalentTo(diseaseSymptoms);
+        var value = okResult?.Value as PagedResult<DiseaseSymptomDto>;
+        value.Should().NotBeNull();
+        value?.Items.Should().HaveCount(2);
+        value?.Items.Should().BeEquivalentTo(diseaseSymptoms);
 
-        _mediatorMock.Verify(m => m.Send(new GetDiseaseSymptomsQuery(), CancellationToken.None), Times.Once);
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetDiseaseSymptomsQuery>(), CancellationToken.None), Times.Once);
     }
+
 
     [Fact]
     public async Task GetById_ExistingDiseaseSymptomId_ReturnsDiseaseSymptom()

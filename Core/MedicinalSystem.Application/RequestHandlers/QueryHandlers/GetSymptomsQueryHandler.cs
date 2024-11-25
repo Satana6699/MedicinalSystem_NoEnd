@@ -3,6 +3,7 @@ using AutoMapper;
 using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Domain.Abstractions;
 using MedicinalSystem.Application.Requests.Queries;
+using MedicinalSystem.Domain.Entities;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers;
 
@@ -22,9 +23,10 @@ public class GetSymptomsQueryHandler : IRequestHandler<GetSymptomsQuery, PagedRe
 
     public async Task<PagedResult<SymptomDto>> Handle(GetSymptomsQuery request, CancellationToken cancellationToken)
     {
-        var totalItems = await _repository.CountAsync();
-        var items = _mapper.Map<IEnumerable<SymptomDto>>(await _repository.GetSymptomsAsync(request.Page, request.PageSize));
-
-		return new PagedResult<SymptomDto>(items, totalItems, request.Page, request.PageSize);
+        var totalItems = await _repository.CountAsync(request.Name);
+        var symptoms = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
+        
+        var items = _mapper.Map<IEnumerable<SymptomDto>>(symptoms);
+        return new PagedResult<SymptomDto>(items, totalItems, request.Page, request.PageSize);
     }
 }

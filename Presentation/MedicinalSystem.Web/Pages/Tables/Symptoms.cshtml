@@ -3,8 +3,15 @@
     Layout = "~/Pages/Shared/Layout.cshtml"; // Указываем путь к макету
     ViewData["Title"] = "Symptoms List";
 }
-<link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
 
+@* <div id="filter-container"> *@
+@*     <input type="text" id="filter-name" placeholder="Filter by symptom name"/> *@
+@*     <button onclick="applyFilters()"> Apply Filters</button> *@
+@* </div> *@
+<div id="filter-container">
+    <label for="filter-disease">Filter by symptom name:</label>
+    <input type="text" id="filter-name" oninput="applyFilters()">
+</div>
 <div id="symptoms-container">
     <!-- Данные будут загружены сюда через JS -->
 </div>
