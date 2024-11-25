@@ -1,5 +1,4 @@
-# Диаграмма сущностей и связей [![build and test](ps://github.com/Satana6699/MedicinalSystem_NoEnd/actions/workflows/dotnet-desktop.yml/badge.svg)](ps://github.com/Satana6699/MedicinalSystem_NoEnd/actions/workflows/dotnet-desktop.yml)
-
+# Диаграмма сущностей и связей [![build and test](https://github.com/Satana6699/MedicinalSystem_NoEnd/actions/workflows/dotnet-desktop.yml/badge.svg)](https://github.com/Satana6699/MedicinalSystem_NoEnd/actions/workflows/dotnet-desktop.yml)
 ```mermaid
 erDiagram
 Manufacturers {
