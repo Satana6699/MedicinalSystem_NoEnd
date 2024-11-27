@@ -1,5 +1,5 @@
-﻿function addEmptyRowDisease() {
-    const table = document.querySelector("#diseases-container table tbody");
+﻿function addEmptyRow() {
+    const table = document.querySelector("#table-container table tbody");
 
     // Создаём новую строку
     const newRow = document.createElement("tr");
@@ -11,10 +11,10 @@
         <td style="padding: 8px;" contenteditable="true"></td>
         <td style="padding: 8px;" contenteditable="true"></td>
         <td style="padding: 8px;">
-            <a href="javascript:void(0);" onclick="saveNewRowDisease(this)" title="Save">
+            <a href="javascript:void(0);" onclick="saveNewRow(this)" title="Save">
                 <i class="bi bi-check-circle-fill"></i>
             </a>
-            <a href="javascript:void(0);" onclick="cancelNewRowDisease(this)" title="Cancel">
+            <a href="javascript:void(0);" onclick="cancelNewRow(this)" title="Cancel">
                 <i class="bi bi-x-circle-fill"></i>
             </a>
         </td>
@@ -23,7 +23,7 @@
     // Вставляем новую строку в начало таблицы
     table.prepend(newRow);
 }
-async function saveNewRowDisease(saveButton) {
+async function saveNewRow(saveButton) {
     const row = saveButton.closest("tr");
     const cells = row.querySelectorAll("td[contenteditable]");
     
@@ -43,7 +43,11 @@ async function saveNewRowDisease(saveButton) {
 
     try {
         // Отправляем данные на сервер
-        const response = await axios.post(apiBaseUrl, newDisease);
+        const response = await axios.post(apiBaseUrl, newDisease, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
 
         if (response.status === 201) {
             alert("Disease created successfully!");

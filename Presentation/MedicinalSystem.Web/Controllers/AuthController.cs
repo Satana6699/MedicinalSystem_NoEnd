@@ -24,7 +24,7 @@ public class AuthController : ControllerBase
         // Пример проверки пользователя
         if (login.Username == "admin" && login.Password == "admin")
         {
-            var token = GenerateJwtToken(login.Username, "admin");
+            var token = GenerateJwtToken(login.Username, "Admin");
             return Ok(new { Token = token, Role = "admin", });
         }
         if (login.Username == "user" && login.Password == "user")

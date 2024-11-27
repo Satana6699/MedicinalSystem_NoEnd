@@ -35,6 +35,7 @@ public class DiseaseSymptomController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] DiseaseSymptomForCreationDto? diseaseSymptom)
     {
         if (diseaseSymptom is null)
@@ -48,6 +49,7 @@ public class DiseaseSymptomController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(Guid id, [FromBody] DiseaseSymptomForUpdateDto? diseaseSymptom)
     {
         if (diseaseSymptom is null)
@@ -73,6 +75,7 @@ public class DiseaseSymptomController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteDiseaseSymptomCommand(id));

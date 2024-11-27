@@ -1,5 +1,5 @@
-﻿function addEmptyRowSymptom() {
-    const table = document.querySelector("#symptoms-container table tbody");
+﻿function addEmptyRow() {
+    const table = document.querySelector("#table-container table tbody");
 
     // Создаём новую строку
     const newRow = document.createElement("tr");
@@ -8,10 +8,10 @@
     newRow.innerHTML = `
         <td style="padding: 8px;" contenteditable="true"></td>
         <td style="padding: 8px;">
-            <a href="javascript:void(0);" onclick="saveNewRowSymptom(this)" title="Save">
+            <a href="javascript:void(0);" onclick="saveNewRow(this)" title="Save">
                 <i class="bi bi-check-circle-fill"></i>
             </a>
-            <a href="javascript:void(0);" onclick="cancelNewRowSymptom(this)" title="Cancel">
+            <a href="javascript:void(0);" onclick="cancelNewRow(this)" title="Cancel">
                 <i class="bi bi-x-circle-fill"></i>
             </a>
         </td>
@@ -20,7 +20,7 @@
     // Вставляем новую строку в начало таблицы
     table.prepend(newRow);
 }
-async function saveNewRowSymptom(saveButton) {
+async function saveNewRow(saveButton) {
     const row = saveButton.closest("tr");
     const cell = row.querySelector("td[contenteditable]");
 
@@ -71,7 +71,7 @@ async function saveNewRowSymptom(saveButton) {
     }
 }
 
-function cancelNewRowSymptom(cancelButton) {
+function cancelNewRow(cancelButton) {
     const row = cancelButton.closest("tr");
     row.remove(); // Удаляем строку
 }

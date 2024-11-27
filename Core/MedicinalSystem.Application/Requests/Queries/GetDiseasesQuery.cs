@@ -8,7 +8,16 @@ using System.Threading.Tasks;
 
 namespace MedicinalSystem.Application.Requests.Queries
 {
-    public class GetDiseasesQuery : IRequest<DiseaseDto>
+    public class GetDiseasesQuery : IRequest<PagedResult<DiseaseDto>>
     {
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public string? Name { get; set; }
+        public GetDiseasesQuery(int page, int pageSize, string? name)
+        {
+            Page = page;
+            PageSize = pageSize;
+            Name = name;
+        }
     }
 }

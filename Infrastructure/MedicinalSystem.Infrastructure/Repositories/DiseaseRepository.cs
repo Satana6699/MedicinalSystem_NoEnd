@@ -25,5 +25,25 @@ public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
     public void Update(Disease entity) => _dbContext.Diseases.Update(entity);
 
     public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+    public async Task<int> CountAsync(string? name)
+    {
+        var diseases = await _dbContext.Diseases.ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            diseases = diseases.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        return diseases.Count();
+    }
+
+    public async Task<IEnumerable<Disease>> GetPageAsync(int page, int pageSize, string? name)
+    {
+        var diseases = await _dbContext.Diseases.ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            diseases = diseases.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        return diseases.Skip((page - 1) * pageSize).Take(pageSize);
+    }
 }
 

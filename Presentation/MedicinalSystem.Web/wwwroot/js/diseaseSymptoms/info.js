@@ -1,4 +1,4 @@
-﻿async function showDiseaseSymptomDetails(deleteButton) {
+﻿async function info(deleteButton) {
     const row = deleteButton.closest('tr');
     const symptom = await axios.get("/api/diseaseSymptoms/" +  row.dataset.id);
     const modal = document.getElementById("diseaseSymptomModal");
@@ -12,13 +12,13 @@
         <p><strong>Последствия:</strong> ${symptom.data.disease.consequences}</p>
         <p><strong>Симптом:</strong> ${symptom.data.symptom.name}</p>
         <button onclick=\"closeDiseaseSymptomModal()\">Close</button>
-        <button onclick=\"deleteDiseaseSymptom('${row.dataset.id}')\">Delete</button>
+        <button onclick=\"deleteRow('${row.dataset.id}')\">Delete</button>
     `;
 
     modal.style.display = "block";
 }
 
-async function deleteDiseaseSymptom(id) {
+async function deleteRoe(id) {
     try {
         const response = await axios.delete(`${apiBaseUrl}/disease-symptoms/${id}`);
         if (response.status === 204) {
@@ -45,6 +45,6 @@ async function deleteDiseaseSymptom(id) {
 }
 
 function closeDiseaseSymptomModal() {
-    const modal = document.getElementById("diseaseSymptomModal");
+    const modal = document.getElementById("modal");
     modal.style.display = "none";
 }

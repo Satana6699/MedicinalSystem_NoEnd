@@ -1,10 +1,10 @@
-﻿function delete_and_infoDisease(deleteButton)
+﻿function info(deleteButton)
 {
     const row = deleteButton.closest('tr');
     const id = row.dataset.id;
 
-    const modal = document.getElementById("diseaseModal");
-    const modalContent = modal.querySelector(".modal-content");
+    const modal = document.getElementById("modal-info");
+    const modalContent = modal.querySelector(".modal-info-content");
 
     modalContent.innerHTML = 
     `
@@ -13,17 +13,21 @@
         <p><strong>Duration:</strong> ${row.cells[1].innerText}</p>
         <p><strong>Symptoms:</strong> ${row.cells[2].innerText}</p>
         <p><strong>Consequences:</strong> ${row.cells[3].innerText}</p>
-        <button onclick="closeModalDisease()">Close</button>
-        <button onclick="deleteDisease('${id}')">Delete</button>
+        <button onclick="closeModal()">Close</button>
+        <button onclick="deleteRow('${id}')">Delete</button>
     `;
 
     modal.style.display = "block";
 }
 
-async function deleteDisease(id)
+async function deleteRow(id)
 {
     try {
-        const response = await axios.delete(`${apiBaseUrl}/${id}`);
+        const response = await axios.delete(`${apiBaseUrl}/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
         if (response.status === 204) {
             const row = document.querySelector(`tr[data-id="${id}"]`);
             if (row) row.remove(); // Удаляем строку из таблицы
@@ -42,13 +46,11 @@ async function deleteDisease(id)
         }
     }
 
-    // Закрываем модальное окно после удаления
-    const modal = document.getElementById("diseaseModal");
-    modal.style.display = "none";
+    closeModal()
 }
 
-function closeModalDisease()
+function closeModal()
 {
-    const modal = document.getElementById("diseaseModal");
+    const modal = document.getElementById("modal-info");
     modal.style.display = "none";
 }

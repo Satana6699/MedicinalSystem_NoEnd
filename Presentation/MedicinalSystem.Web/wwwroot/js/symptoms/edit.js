@@ -1,4 +1,4 @@
-﻿function editRowSymptom(editButton) {
+﻿function editRow(editButton) {
     const row = editButton.closest('tr');
     const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions')); // Исключаем столбец действий
     const isEditing = row.classList.contains('editing');
@@ -11,7 +11,7 @@
             name: cells[0].innerText.trim()
         };
 
-        saveChangesSymptom(id, updatedData, row);
+        saveChanges(id, updatedData, row);
     } else {
         // Начало редактирования
         row.classList.add('editing');
@@ -31,7 +31,7 @@
     }
 }
 
-async function saveChangesSymptom(id, updatedData, row) {
+async function saveChanges(id, updatedData, row) {
     try {
         await axios.put(`${apiBaseUrl}/${id}`, updatedData, {
             headers: {
@@ -49,7 +49,7 @@ async function saveChangesSymptom(id, updatedData, row) {
         // Удаляем кнопку отмены
         const cancelButton = row.querySelector('.cancel-button');
 
-        //ОБНОВЛЕНИЕ СТРАНИЦЫ
+        // Обновление страницы
         location.reload();
 
         if (cancelButton) cancelButton.remove();

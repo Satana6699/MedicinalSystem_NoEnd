@@ -1,4 +1,4 @@
-﻿function editRowDiseaseSymptom(editButton) {
+﻿function editRow(editButton) {
     const row = editButton.closest('tr');
     const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions'));
     const isEditing = row.classList.contains('editing');
@@ -12,7 +12,7 @@
             symptomId: cells[1].dataset.symptomId // Это ID симптома
         };
 
-        saveChangesDiseaseSymptom(id, updatedData, row);
+        saveChanges(id, updatedData, row);
     } else {
         // Начало редактирования
         row.classList.add('editing');
@@ -37,7 +37,7 @@
     }
 }
 
-async function saveChangesDiseaseSymptom(id, updatedData, row) {
+async function saveChanges(id, updatedData, row) {
     try {
         const response = await axios.put(`${apiBaseUrl}/${id}`, updatedData, {
             headers: {
@@ -49,9 +49,6 @@ async function saveChangesDiseaseSymptom(id, updatedData, row) {
         const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions'));
 
         // Обновляем данные в строке
-        //cells[0].innerText = response.data.diseaseName;
-        //cells[1].innerText = response.data.symptomName;
-
         cells[0].innerText = response.data.disease.name;
         cells[1].innerText = response.data.symptom.name;
         // Отключаем возможность редактирования (клик по ячейкам)
