@@ -34,19 +34,6 @@ public class DiseaseSymptomController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var diseaseSymptom = await _mediator.Send(new GetDiseaseSymptomByIdQuery(id));
-
-        if (diseaseSymptom is null)
-        {
-            return NotFound($"DiseaseSymptom with id {id} is not found.");
-        }
-        
-        return Ok(diseaseSymptom);
-    }
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] DiseaseSymptomForCreationDto? diseaseSymptom)
     {
@@ -75,7 +62,14 @@ public class DiseaseSymptomController : ControllerBase
             return NotFound($"DiseaseSymptom with id {id} is not found.");
         }
 
-        return NoContent();
+        var diseaseSymptomDto = await _mediator.Send(new GetDiseaseSymptomByIdQuery(diseaseSymptom.Id));
+
+        if (diseaseSymptomDto is null)
+        {
+            return NotFound($"DiseaseSymptom with id {id} is not found.");
+        }
+
+        return Ok(diseaseSymptomDto);
     }
 
     [HttpDelete("{id}")]
@@ -91,18 +85,30 @@ public class DiseaseSymptomController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetSymptoms(string? nameSymptom = null)
+    [HttpGet("symptoms")]
+    public async Task<IActionResult> GetSymptoms([FromQuery] string? name = null)
     {
-        var result = await _mediator.Send(new GetSymptomsAllQuery(nameSymptom));
+        var result = await _mediator.Send(new GetSymptomsAllQuery(name));
 
         return Ok(result);
     }
-    [HttpGet]
-    public async Task<IActionResult> GetDiseases(string? nameDisease = null)
+    [HttpGet("diseases")]
+    public async Task<IActionResult> GetDiseases([FromQuery] string? name = null)
     {
-        var result = await _mediator.Send(new GetDiseasesAllQuery(nameDisease));
+        var result = await _mediator.Send(new GetDiseasesAllQuery(name));
 
         return Ok(result);
+    }
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var diseaseSymptom = await _mediator.Send(new GetDiseaseSymptomByIdQuery(id));
+
+        if (diseaseSymptom is null)
+        {
+            return NotFound($"DiseaseSymptom with id {id} is not found.");
+        }
+
+        return Ok(diseaseSymptom);
     }
 }

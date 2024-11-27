@@ -33,8 +33,8 @@ function renderDiseaseSymptoms(items, totalItems, currentPage) {
     const tbody = document.createElement("tbody");
     tbody.innerHTML = items.map(item => `
         <tr data-id="${item.id}">
-            <td>${item.disease.name}</td>
-            <td>${item.symptom.name}</td>
+            <td data-field="disease" data-disease-id="${item.disease.id}">${item.disease.name}</td>
+            <td data-field="symptom" data-symptom-id="${item.symptom.id}">${item.symptom.name}</td>
             <td class="actions">
                 <a href="javascript:void(0);" onclick="editRowDiseaseSymptom(this)" title="Edit">
                     <i class="bi bi-pencil-fill"></i>
@@ -60,10 +60,13 @@ async function loadDiseaseSymptoms(page = 1) {
 
         const response = await axios.get(`${apiBaseUrl}`, {
             params: {
-                page,
+                page: page,
                 pageSize: itemsPerPage,
                 nameDisease: diseaseFilter,
                 nameSymptom: symptomFilter,
+            },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
         });
 
@@ -72,6 +75,12 @@ async function loadDiseaseSymptoms(page = 1) {
         // Рендерим данные
         renderDiseaseSymptoms(pageResult.items, pageResult.totalCount, page);
     } catch (error) {
+        if (error.response.status === 401) {
+            alert('Сначала требуется пройти авторизацию.');
+            // Если код состояния 401, перенаправляем на страницу авторизации
+            window.location.href = '/Home/Auth';
+            return;
+        }
         console.error("Error fetching disease symptoms:", error);
         document.getElementById("disease-symptoms-container").innerHTML =
             `<p>Error loading data. Please try again later.</p>`;

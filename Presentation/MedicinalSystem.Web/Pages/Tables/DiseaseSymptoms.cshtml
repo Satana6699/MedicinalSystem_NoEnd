@@ -3,7 +3,7 @@
     Layout = "~/Pages/Shared/Layout.cshtml"; // Указываем путь к макету
     ViewData["Title"] = "Список симптомов болезней";
 }
-<link rel = "stylesheet" href ="~/css/modal.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/modal_list.css" asp-append-version="true" />
 <div id="filter-container">
     <label for="filter-disease">Disease:</label>
     <input type="text" id="filter-disease" oninput="applyDiseaseSymptomFilters()">
@@ -14,8 +14,8 @@
 <div id="disease-symptoms-container">
     <!--Данные будут загружены сюда через JS -->
 </div>
-<div id="diseaseSymptomModal" class="modal">
-    <div class="modal-content">
+<div id="diseaseSymptomModal" class="modal-info">
+    <div class="modal-info-content">
     <!--Здесь будет содержимое для отображения подробностей -->
     </div>
 </div>
@@ -23,4 +23,4 @@
 <script rel="stylesheet" src="~/js/diseaseSymptoms/get.js" asp-append-version="true"></script>
 <script rel="stylesheet" src="~/js/diseaseSymptoms/edit.js" asp-append-version="true"></script>
 <script rel="stylesheet" src="~/js/diseaseSymptoms/create.js" asp-append-version="true"></script>
-<script rel="stylesheet" src="~/js/diseaseSymptoms/delete_and_info.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/diseaseSymptoms/info.js" asp-append-version="true"></script>

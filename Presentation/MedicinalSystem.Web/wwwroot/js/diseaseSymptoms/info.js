@@ -2,7 +2,7 @@
     const row = deleteButton.closest('tr');
     const symptom = await axios.get("/api/diseaseSymptoms/" +  row.dataset.id);
     const modal = document.getElementById("diseaseSymptomModal");
-    const modalContent = modal.querySelector(".modal-content");
+    const modalContent = modal.querySelector(".modal-info-content");
 
     modalContent.innerHTML = `
         <h3>Детали болезни и симптома</h3>

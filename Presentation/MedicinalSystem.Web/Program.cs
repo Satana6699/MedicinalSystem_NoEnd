@@ -106,6 +106,5 @@ app.MapFallbackToPage("/Home/Index"); // Указывает на страницу Home.cshtml как н
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 // Запуск приложения
 app.Run();

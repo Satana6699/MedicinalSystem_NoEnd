@@ -48,9 +48,8 @@ function renderSymptoms(items, totalItems, currentPage) {
 
     table.appendChild(tbody);
     container.appendChild(table);
-    const role = localStorage.getItem('role');
     const editButtons = document.querySelectorAll('.edit-buttons');
-    if (role === 'admin') {
+    if (localStorage.getItem('role') === 'admin') {
         // Показать все кнопки редактирования
         editButtons.forEach(button => {
             button.style.display = 'inline-block'; // или block, в зависимости от желаемого поведения
