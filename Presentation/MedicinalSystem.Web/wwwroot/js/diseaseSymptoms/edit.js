@@ -1,4 +1,4 @@
-﻿function editRowSymptom(editButton) {
+﻿function editRowDiseaseSymptom(editButton) {
     const row = editButton.closest('tr');
     const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions')); // Исключаем столбец действий
     const isEditing = row.classList.contains('editing');
@@ -17,7 +17,14 @@
         row.classList.add('editing');
         row.dataset.originalData = JSON.stringify(cells.map(cell => cell.innerText.trim()));
 
-        cells.forEach(cell => cell.setAttribute('contenteditable', 'true')); // Только данные можно редактировать
+        cells.forEach(cell => {
+            if (cell.classList.contains('editable')) {
+                makeEditable(cell); // Для редактируемых ячеек
+            } else {
+                cell.setAttribute('contenteditable', 'true');
+            }
+        });
+
         editButton.innerHTML = '<i class="bi bi-check-circle-fill"></i>'; // Иконка сохранения
         editButton.title = "Save";
 
@@ -29,6 +36,48 @@
         cancelButton.onclick = () => cancelEditingSymptom(row);
         row.querySelector('td.actions').appendChild(cancelButton); // Кнопка отмены только в actions
     }
+}
+
+function makeEditable(cell) {
+    const currentValue = cell.innerText.trim();
+    const dropdown = document.createElement('div');
+    dropdown.className = 'dropdown-container';
+    dropdown.style.display = 'block';  // Скрывать по умолчанию, будет показан при редактировании
+    const searchInput = document.createElement('input');
+    searchInput.className = 'search-input';
+    searchInput.placeholder = 'Search...';
+    dropdown.appendChild(searchInput);
+
+    // Список симптомов или болезней
+    const dropdownList = document.createElement('div');
+    dropdownList.className = 'dropdown-list';
+    dropdown.appendChild(dropdownList);
+
+    // Загрузка данных симптомов/болезней
+    const data = cell.dataset.type === 'symptom' ? symptomsData : diseasesData; // Пример данных
+
+    data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item';
+        div.innerText = item.name;
+        div.onclick = function () {
+            cell.innerText = item.name;
+            dropdown.remove();
+        };
+        dropdownList.appendChild(div);
+    });
+
+    cell.appendChild(dropdown);
+
+    // Фильтрация элементов в выпадающем списке
+    searchInput.addEventListener('input', function () {
+        const filter = searchInput.value.toLowerCase();
+        const items = dropdownList.getElementsByClassName('dropdown-item');
+        Array.from(items).forEach(item => {
+            const text = item.innerText.toLowerCase();
+            item.style.display = text.includes(filter) ? '' : 'none';
+        });
+    });
 }
 
 async function saveChangesSymptom(id, updatedData, row) {
@@ -45,7 +94,7 @@ async function saveChangesSymptom(id, updatedData, row) {
         // Удаляем кнопку отмены
         const cancelButton = row.querySelector('.cancel-button');
 
-        //ОБНОВЛЕНИЕ СТРАНИЦЫ
+        //Обновляем страницу после успешного сохранения
         location.reload();
 
         if (cancelButton) cancelButton.remove();

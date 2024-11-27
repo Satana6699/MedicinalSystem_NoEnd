@@ -14,7 +14,7 @@ function renderDiseaseSymptoms(items, totalItems, currentPage) {
     const table = document.createElement("table");
     const caption = document.createElement("caption");
     caption.innerHTML = `
-        Disease Symptom List
+        Болезни и симптомы
         <a href="javascript:void(0);" onclick="addEmptyRowDiseaseSymptom()" title="Add Item">
             <i class="bi bi-plus-square-fill"></i>
         </a>`;
@@ -39,7 +39,7 @@ function renderDiseaseSymptoms(items, totalItems, currentPage) {
                 <a href="javascript:void(0);" onclick="editRowDiseaseSymptom(this)" title="Edit">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
-                <a href="javascript:void(0);" onclick="delete_and_infoDiseaseSymptom(this)" title="Delete Item">
+                <a href="javascript:void(0);" onclick="showDiseaseSymptomDetails(this)" title="Delete Item">
                     <i class="bi bi-eye-fill"></i>
                 </a>
             </td>

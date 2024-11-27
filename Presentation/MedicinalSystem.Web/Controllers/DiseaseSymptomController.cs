@@ -4,6 +4,7 @@ using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Application.Requests.Queries;
 using MedicinalSystem.Application.Requests.Commands;
 using Bogus.DataSets;
+using Microsoft.EntityFrameworkCore;
 
 namespace MedicinalSystem.Web.Controllers;
 
@@ -25,12 +26,10 @@ public class DiseaseSymptomController : ControllerBase
         {
             return BadRequest("Page and pageSize must be greater than zero.");
         }
-        var diseaseSymptoms = await _mediator.Send(new GetDiseaseSymptomsQuery(page, pageSize, nameDisease, nameSymptom));
 
-        var query = new GetDiseaseSymptomsQuery(page, pageSize, nameDisease, nameSymptom);
-        var result = await _mediator.Send(query);
+        var result = await _mediator.Send(new GetDiseaseSymptomsQuery(page, pageSize, nameDisease, nameSymptom));
 
-        return Ok(diseaseSymptoms);
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
@@ -88,5 +87,20 @@ public class DiseaseSymptomController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetSymptoms(string? nameSymptom = null)
+    {
+        var result = await _mediator.Send(new GetSymptomsAllQuery(nameSymptom));
+
+        return Ok(result);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetDiseases(string? nameDisease = null)
+    {
+        var result = await _mediator.Send(new GetDiseasesAllQuery(nameDisease));
+
+        return Ok(result);
     }
 }
