@@ -2,6 +2,8 @@
 let currentPage = 1; // Текущая страница
 const itemsPerPage = 10; // Количество записей на странице
 
+
+
 function renderSymptoms(items, totalItems, currentPage) {
     const container = document.getElementById("symptoms-container");
     container.innerHTML = "";
@@ -15,7 +17,7 @@ function renderSymptoms(items, totalItems, currentPage) {
     const caption = document.createElement("caption");
     caption.innerHTML = `
         Symptom List
-            <a href="javascript:void(0);" onclick="addEmptyRowSymptom()" title="Add Item">
+        <a class="edit-buttons" href="javascript:void(0);" onclick="addEmptyRowSymptom()" title="Add Item">
             <i class="bi bi-plus-square-fill"></i>
         </a>`;
     table.appendChild(caption);
@@ -34,7 +36,7 @@ function renderSymptoms(items, totalItems, currentPage) {
         <tr data-id="${item.id}">
             <td contenteditable="false">${item.name}</td>
             <td class="actions">
-                <a href="javascript:void(0);" onclick="editRowSymptom(this)" title="Edit">
+                <a class="edit-buttons" href="javascript:void(0);" onclick="editRowSymptom(this)" title="Edit">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
                 <a href="javascript:void(0);" onclick="delete_and_infoSymptom(this)" title="Delete Item">
@@ -46,6 +48,19 @@ function renderSymptoms(items, totalItems, currentPage) {
 
     table.appendChild(tbody);
     container.appendChild(table);
+    const role = localStorage.getItem('role');
+    const editButtons = document.querySelectorAll('.edit-buttons');
+    if (role === 'admin') {
+        // Показать все кнопки редактирования
+        editButtons.forEach(button => {
+            button.style.display = 'inline-block'; // или block, в зависимости от желаемого поведения
+        });
+    } else {
+        // Скрыть все кнопки редактирования
+        editButtons.forEach(button => {
+            button.style.display = 'none';
+        });
+    }
 
     // Рендерим пагинацию
     renderPagination(totalItems, currentPage);
@@ -126,13 +141,22 @@ async function loadSymptoms(page = 1) {
                 pageSize: itemsPerPage,
                 name: nameFilter,
             },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token') }`,
+            },
         });
-
+        
         const pageResult = response.data;
 
         // Рендерим симптомы и пагинацию
         renderSymptoms(pageResult.items, pageResult.totalCount, page);
     } catch (error) {
+        if (error.response.status === 401) {
+            alert('Сначала требуется пройти авторизацию.');
+            // Если код состояния 401, перенаправляем на страницу авторизации
+            window.location.href = '/Home/Auth';
+            return;
+        }
         console.error("Error fetching symptoms:", error);
         document.getElementById("symptoms-container").innerHTML =
             `<p>Error loading symptoms. Please try again later.</p>`;

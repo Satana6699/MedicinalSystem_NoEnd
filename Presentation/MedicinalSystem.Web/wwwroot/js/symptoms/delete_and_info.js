@@ -20,7 +20,11 @@
 async function deleteSymptom(id)
 {
     try {
-        const response = await axios.delete(`${apiBaseUrl}/${id}`);
+        const response = await axios.delete(`${apiBaseUrl}/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token') }`,
+            },
+        });
         if (response.status === 204) {
             const row = document.querySelector(`tr[data-id="${id}"]`);
             if (row) row.remove(); // Удаляем строку из таблицы

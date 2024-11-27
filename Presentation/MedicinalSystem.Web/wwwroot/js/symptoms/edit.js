@@ -33,7 +33,11 @@
 
 async function saveChangesSymptom(id, updatedData, row) {
     try {
-        await axios.put(`${apiBaseUrl}/${id}`, updatedData);
+        await axios.put(`${apiBaseUrl}/${id}`, updatedData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token') }`,
+            },
+        });
         row.classList.remove('editing');
         const cells = row.querySelectorAll('td[contenteditable]');
         cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));

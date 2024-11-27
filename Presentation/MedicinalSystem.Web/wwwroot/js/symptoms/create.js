@@ -37,7 +37,11 @@ async function saveNewRowSymptom(saveButton) {
 
     try {
         // Отправляем данные на сервер
-        const response = await axios.post(apiBaseUrl, newSymptom);
+        const response = await axios.post(apiBaseUrl, newSymptom, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token') }`,
+            },
+        });
 
         if (response.status === 201) {
             alert("Symptom created successfully!");

@@ -5,10 +5,12 @@ using MedicinalSystem.Application.Requests.Queries;
 using MedicinalSystem.Application.Requests.Commands;
 using Bogus.DataSets;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedicinalSystem.Web.Controllers;
 
 [Route("api/diseaseSymptoms")]
+[Authorize]
 [ApiController]
 public class DiseaseSymptomController : ControllerBase
 {
