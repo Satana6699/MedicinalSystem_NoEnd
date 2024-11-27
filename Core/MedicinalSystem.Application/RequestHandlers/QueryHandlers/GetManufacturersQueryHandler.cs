@@ -6,7 +6,7 @@ using MedicinalSystem.Application.Requests.Queries;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers;
 
-public class GetManufacturersQueryHandler : IRequestHandler<GetManufacturersQuery, IEnumerable<ManufacturerDto>>
+public class GetManufacturersQueryHandler : IRequestHandler<GetManufacturersQuery, PagedResult<ManufacturerDto>>
 {
 	private readonly IManufacturerRepository _repository;
 	private readonly IMapper _mapper;
@@ -17,6 +17,12 @@ public class GetManufacturersQueryHandler : IRequestHandler<GetManufacturersQuer
 		_mapper = mapper;
 	}
 
-	public async Task<IEnumerable<ManufacturerDto>> Handle(GetManufacturersQuery request, CancellationToken cancellationToken) => 
-		_mapper.Map<IEnumerable<ManufacturerDto>>(await _repository.Get(trackChanges: false));
+	public async Task<PagedResult<ManufacturerDto>> Handle(GetManufacturersQuery request, CancellationToken cancellationToken)
+    {
+        var totalItems = await _repository.CountAsync(request.Name);
+        var manufacturers = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
+
+        var items = _mapper.Map<IEnumerable<ManufacturerDto>>(manufacturers);
+        return new PagedResult<ManufacturerDto>(items, totalItems, request.Page, request.PageSize);
+    }
 }

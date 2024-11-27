@@ -20,9 +20,9 @@ public class MedicinePriceController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null)
     {
-        var medicinePrices = await _mediator.Send(new GetMedicinePricesQuery());
+        var medicinePrices = await _mediator.Send(new GetMedicinePricesQuery(page, pageSize, name));
 
         return Ok(medicinePrices);
     }

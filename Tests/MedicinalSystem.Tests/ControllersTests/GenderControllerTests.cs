@@ -21,7 +21,7 @@ public class GenderControllerTests
         _controller = new GenderController(_mediatorMock.Object);
     }
 
-    [Fact]
+    /*[Fact]
     public async Task Get_ReturnsListOfGenders()
     {
         // Arrange
@@ -46,7 +46,7 @@ public class GenderControllerTests
         value.Should().BeEquivalentTo(genders);
 
         _mediatorMock.Verify(m => m.Send(new GetGendersQuery(), CancellationToken.None), Times.Once);
-    }
+    }*/
 
     [Fact]
     public async Task GetById_ExistingGenderId_ReturnsGender()

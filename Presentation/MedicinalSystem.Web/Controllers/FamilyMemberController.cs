@@ -20,9 +20,9 @@ public class FamilyMemberController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null)
     {
-        var familyMembers = await _mediator.Send(new GetFamilyMembersQuery());
+        var familyMembers = await _mediator.Send(new GetFamilyMembersQuery(page, pageSize, name));
 
         return Ok(familyMembers);
     }

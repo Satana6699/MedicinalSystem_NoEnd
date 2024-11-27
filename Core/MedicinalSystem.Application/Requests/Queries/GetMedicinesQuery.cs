@@ -3,7 +3,7 @@ using MedicinalSystem.Application.Dtos;
 
 namespace MedicinalSystem.Application.Requests.Queries;
 
-public record GetMedicinesQuery : IRequest<IEnumerable<MedicineDto>>
+public record GetMedicinesQuery : IRequest<PagedResult<MedicineDto>>
 {
     public int Page { get; }
     public int PageSize { get; }

@@ -12,8 +12,8 @@ public class MedicineRepository(AppDbContext dbContext) : IMedicineRepository
 
     public async Task<IEnumerable<Medicine>> Get(bool trackChanges) =>
         await (!trackChanges 
-            ? _dbContext.Medicines.Include(e => e.Manufacturer).AsNoTracking() 
-            : _dbContext.Medicines.Include(e => e.Manufacturer)).ToListAsync();
+            ? _dbContext.Medicines.Include(e => e.Manufacturer).OrderBy(d => d.Id).AsNoTracking() 
+            : _dbContext.Medicines.Include(e => e.Manufacturer).OrderBy(d => d.Id)).ToListAsync();
 
     public async Task<Medicine?> GetById(Guid id, bool trackChanges) =>
         await (!trackChanges ?
@@ -24,6 +24,27 @@ public class MedicineRepository(AppDbContext dbContext) : IMedicineRepository
 
     public void Update(Medicine entity) => _dbContext.Medicines.Update(entity);
 
-    public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+    public async Task SaveChanges() => await _dbContext.SaveChangesAsync(); 
+    
+    public async Task<int> CountAsync(string? name)
+    {
+        var medicines = await _dbContext.Medicines.ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            medicines = medicines.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        return medicines.Count();
+    }
+
+    public async Task<IEnumerable<Medicine>> GetPageAsync(int page, int pageSize, string? name)
+    {
+        var medicines = await _dbContext.Medicines.Include(e => e.Manufacturer).OrderBy(d => d.Id).ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            medicines = medicines.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        return medicines.Skip((page - 1) * pageSize).Take(pageSize);
+    }
 }
 

@@ -12,8 +12,8 @@ public class FamilyMemberRepository(AppDbContext dbContext) : IFamilyMemberRepos
 
     public async Task<IEnumerable<FamilyMember>> Get(bool trackChanges) =>
         await (!trackChanges 
-            ? _dbContext.FamilyMembers.Include(e => e.Gender).AsNoTracking() 
-            : _dbContext.FamilyMembers.Include(e => e.Gender)).ToListAsync();
+            ? _dbContext.FamilyMembers.Include(e => e.Gender).OrderBy(d => d.Id).AsNoTracking() 
+            : _dbContext.FamilyMembers.Include(e => e.Gender).OrderBy(d => d.Id)).ToListAsync();
 
     public async Task<FamilyMember?> GetById(Guid id, bool trackChanges) =>
         await (!trackChanges ?
@@ -25,5 +25,26 @@ public class FamilyMemberRepository(AppDbContext dbContext) : IFamilyMemberRepos
     public void Update(FamilyMember entity) => _dbContext.FamilyMembers.Update(entity);
 
     public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+
+    public async Task<int> CountAsync(string? name)
+    {
+        var familyMembers = await _dbContext.FamilyMembers.Include(e => e.Gender).ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            familyMembers = familyMembers.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        return familyMembers.Count();
+    }
+
+    public async Task<IEnumerable<FamilyMember>> GetPageAsync(int page, int pageSize, string? name)
+    {
+        var familyMembers = await _dbContext.FamilyMembers.Include(e => e.Gender).OrderBy(d => d.Id).ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            familyMembers = familyMembers.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        return familyMembers.Skip((page - 1) * pageSize).Take(pageSize);
+    }
 }
 

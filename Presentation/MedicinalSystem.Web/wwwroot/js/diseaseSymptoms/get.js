@@ -48,15 +48,7 @@ async function loadData(page = 1) {
         // Создание таблицы
         createTable(itemsLength, totalCount, page, tableTitle, tableHead, tableBody);
     } catch (error) {
-        if (typeof response !== 'undefined' && typeof response.status !== 'undefined' && error.response.status === 401) {
-            alert('Сначала требуется пройти авторизацию.');
-            // Если код состояния 401, перенаправляем на страницу авторизации
-            window.location.href = '/Home/Auth';
-            return;
-        }
-        console.error("Error fetching disease symptoms:", error);
-        document.getElementById("table-container").innerHTML =
-            `<p>Error loading data. Please try again later.</p>`;
+        ERROR(error);
     }
 }
 

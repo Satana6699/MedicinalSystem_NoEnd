@@ -24,7 +24,7 @@ async function loadData(page = 1) {
         const tableHead = `
             <tr>
                 <th>Симтом</th>
-                <th>Actions</th>
+                <th>Действия</th>
             </tr>
         `;
         const tableBody = response.data.items.map(item => `
@@ -44,15 +44,7 @@ async function loadData(page = 1) {
         // Создание таблицы
         createTable(itemsLength, totalCount, page, tableTitle, tableHead, tableBody);
     } catch (error) {
-        if (typeof response !== 'undefined' && typeof response.status !== 'undefined' && error.response.status === 401) {
-            alert('Сначала требуется пройти авторизацию.');
-            // Если код состояния 401, перенаправляем на страницу авторизации
-            window.location.href = '/Home/Auth';
-            return;
-        }
-        console.error("Error fetching symptoms:", error);
-        document.getElementById("table-container").innerHTML =
-            `<p>Error loading symptoms. Please try again later.</p>`;
+        ERROR(error);
     }
 }
 

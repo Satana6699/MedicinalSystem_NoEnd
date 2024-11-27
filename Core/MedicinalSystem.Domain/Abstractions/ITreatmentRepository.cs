@@ -10,5 +10,7 @@ public interface ITreatmentRepository
     void Delete(Treatment entity);
     void Update(Treatment entity);
     Task SaveChanges();
+    Task<IEnumerable<Treatment>> GetPageAsync(int page, int pageSize, string? name);
+    Task<int> CountAsync(string? name);
 }
 

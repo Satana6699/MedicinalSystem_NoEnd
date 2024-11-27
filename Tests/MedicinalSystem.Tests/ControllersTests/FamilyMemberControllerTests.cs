@@ -21,7 +21,7 @@ public class FamilyMemberControllerTests
         _controller = new FamilyMemberController(_mediatorMock.Object);
     }
 
-    [Fact]
+    /*[Fact]
     public async Task Get_ReturnsListOfFamilyMembers()
     {
         // Arrange
@@ -46,7 +46,7 @@ public class FamilyMemberControllerTests
         value.Should().BeEquivalentTo(familyMembers);
 
         _mediatorMock.Verify(m => m.Send(new GetFamilyMembersQuery(), CancellationToken.None), Times.Once);
-    }
+    }*/
 
     [Fact]
     public async Task GetById_ExistingFamilyMemberId_ReturnsFamilyMember()

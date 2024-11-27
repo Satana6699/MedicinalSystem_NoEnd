@@ -48,10 +48,10 @@ async function saveNew(saveButton) {
             row.innerHTML = `
                 <td style="padding: 8px;" contenteditable="false">${response.data.name}</td>
                 <td style="padding: 8px;">
-                    <a href="javascript:void(0);" onclick="editRowSymptom(this)" title="Edit">
+                    <a href="javascript:void(0);" onclick="editRow(this)" title="Edit">
                         <i class="bi bi-pencil-fill"></i>
                     </a>
-                    <a href="javascript:void(0);" onclick="delete_and_infoSymptom(this)" title="Delete Item">
+                    <a href="javascript:void(0);" onclick="info(this)" title="Delete Item">
                         <i class="bi bi-eye-fill"></i>
                     </a>
                 </td>

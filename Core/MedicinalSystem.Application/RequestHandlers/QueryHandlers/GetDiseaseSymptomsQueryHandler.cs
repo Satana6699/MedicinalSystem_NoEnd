@@ -17,9 +17,6 @@ public class GetDiseaseSymptomsQueryHandler : IRequestHandler<GetDiseaseSymptoms
 		_mapper = mapper;
 	}
 
-    //public async Task<IEnumerable<DiseaseSymptomDto>> Handle(GetDiseaseSymptomsQuery request, CancellationToken cancellationToken) => 
-    //	_mapper.Map<IEnumerable<DiseaseSymptomDto>>(await _repository.Get(trackChanges: false));
-
     public async Task<PagedResult<DiseaseSymptomDto>> Handle(GetDiseaseSymptomsQuery request, CancellationToken cancellationToken)
     {
         var totalItems = await _repository.CountAsync(request.NameDisease, request.NameSymptom);

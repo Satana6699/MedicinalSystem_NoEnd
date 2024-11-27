@@ -10,5 +10,7 @@ public interface IMedicineRepository
     void Delete(Medicine entity);
     void Update(Medicine entity);
     Task SaveChanges();
+    Task<IEnumerable<Medicine>> GetPageAsync(int page, int pageSize, string? name);
+    Task<int> CountAsync(string? name);
 }
 

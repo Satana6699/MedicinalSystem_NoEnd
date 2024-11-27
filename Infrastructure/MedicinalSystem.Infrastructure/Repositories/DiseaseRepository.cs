@@ -11,9 +11,9 @@ public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
     public async Task Create(Disease entity) => await _dbContext.Diseases.AddAsync(entity);
 
     public async Task<IEnumerable<Disease>> Get(bool trackChanges) =>
-        await (!trackChanges 
-            ? _dbContext.Diseases.AsNoTracking() 
-            : _dbContext.Diseases).ToListAsync();
+        await (!trackChanges
+            ? _dbContext.Diseases.AsNoTracking().OrderBy(d => d.Id)
+            : _dbContext.Diseases.OrderBy(d => d.Id)).ToListAsync();
 
     public async Task<Disease?> GetById(Guid id, bool trackChanges) =>
         await (!trackChanges ?
@@ -25,6 +25,7 @@ public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
     public void Update(Disease entity) => _dbContext.Diseases.Update(entity);
 
     public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+
     public async Task<int> CountAsync(string? name)
     {
         var diseases = await _dbContext.Diseases.ToListAsync();
@@ -37,7 +38,7 @@ public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
 
     public async Task<IEnumerable<Disease>> GetPageAsync(int page, int pageSize, string? name)
     {
-        var diseases = await _dbContext.Diseases.ToListAsync();
+        var diseases = await _dbContext.Diseases.OrderBy(d => d.Id).ToListAsync();
         if (!string.IsNullOrWhiteSpace(name))
         {
             diseases = diseases.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -46,4 +47,3 @@ public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
         return diseases.Skip((page - 1) * pageSize).Take(pageSize);
     }
 }
-

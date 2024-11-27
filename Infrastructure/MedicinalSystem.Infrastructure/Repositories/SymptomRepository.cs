@@ -10,16 +10,12 @@ namespace MedicinalSystem.Infrastructure.Repositories;
 public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
-    public IQueryable<Symptom> Query()
-    {
-        return _dbContext.Symptoms.AsQueryable();
-    }
     public async Task Create(Symptom entity) => await _dbContext.Symptoms.AddAsync(entity);
 
     public async Task<IEnumerable<Symptom>> Get(bool trackChanges) =>
         await (!trackChanges 
-            ? _dbContext.Symptoms.AsNoTracking() 
-            : _dbContext.Symptoms).ToListAsync();
+            ? _dbContext.Symptoms.OrderBy(d => d.Id).AsNoTracking() 
+            : _dbContext.Symptoms.OrderBy(d => d.Id)).ToListAsync();
 
     public async Task<Symptom?> GetById(Guid id, bool trackChanges) =>
         await (!trackChanges ?
@@ -31,6 +27,7 @@ public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
     public void Update(Symptom entity) => _dbContext.Symptoms.Update(entity);
 
     public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+
     public async Task<int> CountAsync(string? name)
     {
         var symptoms = await _dbContext.Symptoms.ToListAsync();
@@ -43,7 +40,7 @@ public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
 
     public async Task<IEnumerable<Symptom>> GetPageAsync(int page, int pageSize, string? name)
     {
-        var symptoms = await _dbContext.Symptoms.ToListAsync();
+        var symptoms = await _dbContext.Symptoms.OrderBy(d => d.Id).ToListAsync();
         if (!string.IsNullOrWhiteSpace(name))
         {
             symptoms = symptoms.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();

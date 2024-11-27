@@ -140,3 +140,20 @@ async function deleteRow(id) {
     // Закрываем модальное окно после удаления
     closeModal();
 }
+
+function closeModal() {
+    const modal = document.getElementById("modal");
+    modal.style.display = "none";
+}
+
+function ERROR(error){
+    if (error.response.status === 401) {
+        alert('Сначала требуется пройти авторизацию.');
+        // Если код состояния 401, перенаправляем на страницу авторизации
+        window.location.href = '/Home/Auth';
+        return;
+    }
+    console.error("Error fetching symptoms:", error);
+    document.getElementById("table-container").innerHTML =
+        `<p>Error loading symptoms. Please try again later.</p>`;
+}
