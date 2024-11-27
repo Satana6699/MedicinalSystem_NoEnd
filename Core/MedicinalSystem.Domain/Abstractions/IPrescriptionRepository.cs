@@ -10,5 +10,7 @@ public interface IPrescriptionRepository
     void Delete(Prescription entity);
     void Update(Prescription entity);
     Task SaveChanges();
+    Task<IEnumerable<Prescription>> GetPageAsync(int page, int pageSize, string? name);
+    Task<int> CountAsync(string? name);
 }
 

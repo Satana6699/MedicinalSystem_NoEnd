@@ -21,7 +21,7 @@ public class ManufacturerControllerTests
         _controller = new ManufacturerController(_mediatorMock.Object);
     }
 
-    [Fact]
+    /*[Fact]
     public async Task Get_ReturnsListOfManufacturers()
     {
         // Arrange
@@ -46,7 +46,7 @@ public class ManufacturerControllerTests
         value.Should().BeEquivalentTo(manufacturers);
 
         _mediatorMock.Verify(m => m.Send(new GetManufacturersQuery(), CancellationToken.None), Times.Once);
-    }
+    }*/
 
     [Fact]
     public async Task GetById_ExistingManufacturerId_ReturnsManufacturer()

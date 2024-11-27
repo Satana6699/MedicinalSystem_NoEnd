@@ -3,10 +3,12 @@
 using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Application.Requests.Queries;
 using MedicinalSystem.Application.Requests.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedicinalSystem.Web.Controllers;
 
 [Route("api/manufacturers")]
+[Authorize]
 [ApiController]
 public class ManufacturerController : ControllerBase
 {
@@ -18,9 +20,9 @@ public class ManufacturerController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null)
     {
-        var manufacturers = await _mediator.Send(new GetManufacturersQuery());
+        var manufacturers = await _mediator.Send(new GetManufacturersQuery(page, pageSize, name));
 
         return Ok(manufacturers);
     }

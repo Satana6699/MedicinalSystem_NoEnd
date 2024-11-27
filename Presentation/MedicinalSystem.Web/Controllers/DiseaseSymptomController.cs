@@ -4,10 +4,13 @@ using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Application.Requests.Queries;
 using MedicinalSystem.Application.Requests.Commands;
 using Bogus.DataSets;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedicinalSystem.Web.Controllers;
 
 [Route("api/diseaseSymptoms")]
+[Authorize]
 [ApiController]
 public class DiseaseSymptomController : ControllerBase
 {
@@ -25,28 +28,14 @@ public class DiseaseSymptomController : ControllerBase
         {
             return BadRequest("Page and pageSize must be greater than zero.");
         }
-        var diseaseSymptoms = await _mediator.Send(new GetDiseaseSymptomsQuery(page, pageSize, nameDisease, nameSymptom));
 
-        var query = new GetDiseaseSymptomsQuery(page, pageSize, nameDisease, nameSymptom);
-        var result = await _mediator.Send(query);
+        var result = await _mediator.Send(new GetDiseaseSymptomsQuery(page, pageSize, nameDisease, nameSymptom));
 
-        return Ok(diseaseSymptoms);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var diseaseSymptom = await _mediator.Send(new GetDiseaseSymptomByIdQuery(id));
-
-        if (diseaseSymptom is null)
-        {
-            return NotFound($"DiseaseSymptom with id {id} is not found.");
-        }
-        
-        return Ok(diseaseSymptom);
+        return Ok(result);
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] DiseaseSymptomForCreationDto? diseaseSymptom)
     {
         if (diseaseSymptom is null)
@@ -60,6 +49,7 @@ public class DiseaseSymptomController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(Guid id, [FromBody] DiseaseSymptomForUpdateDto? diseaseSymptom)
     {
         if (diseaseSymptom is null)
@@ -74,10 +64,18 @@ public class DiseaseSymptomController : ControllerBase
             return NotFound($"DiseaseSymptom with id {id} is not found.");
         }
 
-        return NoContent();
+        var diseaseSymptomDto = await _mediator.Send(new GetDiseaseSymptomByIdQuery(diseaseSymptom.Id));
+
+        if (diseaseSymptomDto is null)
+        {
+            return NotFound($"DiseaseSymptom with id {id} is not found.");
+        }
+
+        return Ok(diseaseSymptomDto);
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteDiseaseSymptomCommand(id));
@@ -88,5 +86,32 @@ public class DiseaseSymptomController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("symptoms")]
+    public async Task<IActionResult> GetSymptoms([FromQuery] string? name = null)
+    {
+        var result = await _mediator.Send(new GetSymptomsAllQuery(name));
+
+        return Ok(result);
+    }
+    [HttpGet("diseases")]
+    public async Task<IActionResult> GetDiseases([FromQuery] string? name = null)
+    {
+        var result = await _mediator.Send(new GetDiseasesAllQuery(name));
+
+        return Ok(result);
+    }
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var diseaseSymptom = await _mediator.Send(new GetDiseaseSymptomByIdQuery(id));
+
+        if (diseaseSymptom is null)
+        {
+            return NotFound($"DiseaseSymptom with id {id} is not found.");
+        }
+
+        return Ok(diseaseSymptom);
     }
 }

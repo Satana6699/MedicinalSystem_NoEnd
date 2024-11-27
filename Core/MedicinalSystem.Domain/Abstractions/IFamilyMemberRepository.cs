@@ -10,5 +10,7 @@ public interface IFamilyMemberRepository
     void Delete(FamilyMember entity);
     void Update(FamilyMember entity);
     Task SaveChanges();
+    Task<IEnumerable<FamilyMember>> GetPageAsync(int page, int pageSize, string? name);
+    Task<int> CountAsync(string? name);
 }
 

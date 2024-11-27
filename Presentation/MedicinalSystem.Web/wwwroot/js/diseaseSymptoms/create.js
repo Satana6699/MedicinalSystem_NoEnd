@@ -1,5 +1,5 @@
-﻿function addEmptyRowDiseaseSymptom() {
-    const table = document.querySelector("#symptoms-container table tbody");
+﻿function addEmptyRow() {
+    const table = document.querySelector("#table-container table tbody");
 
     // Создаём новую строку
     const newRow = document.createElement("tr");
@@ -8,10 +8,11 @@
     newRow.innerHTML = `
         <td style="padding: 8px;" contenteditable="true"></td>
         <td style="padding: 8px;">
-            <a href="javascript:void(0);" onclick="saveNewRowSymptom(this)" title="Save">
+        <td style="padding: 8px;">
+            <a href="javascript:void(0);" onclick="saveNewRow(this)" title="Save">
                 <i class="bi bi-check-circle-fill"></i>
             </a>
-            <a href="javascript:void(0);" onclick="cancelNewRowSymptom(this)" title="Cancel">
+            <a href="javascript:void(0);" onclick="cancelNewRow(this)" title="Cancel">
                 <i class="bi bi-x-circle-fill"></i>
             </a>
         </td>
@@ -20,7 +21,7 @@
     // Вставляем новую строку в начало таблицы
     table.prepend(newRow);
 }
-async function saveNewRowSymptom(saveButton) {
+async function saveNew(saveButton) {
     const row = saveButton.closest("tr");
     const cell = row.querySelector("td[contenteditable]");
 
@@ -47,10 +48,10 @@ async function saveNewRowSymptom(saveButton) {
             row.innerHTML = `
                 <td style="padding: 8px;" contenteditable="false">${response.data.name}</td>
                 <td style="padding: 8px;">
-                    <a href="javascript:void(0);" onclick="editRowSymptom(this)" title="Edit">
+                    <a href="javascript:void(0);" onclick="editRow(this)" title="Edit">
                         <i class="bi bi-pencil-fill"></i>
                     </a>
-                    <a href="javascript:void(0);" onclick="delete_and_infoSymptom(this)" title="Delete Item">
+                    <a href="javascript:void(0);" onclick="info(this)" title="Delete Item">
                         <i class="bi bi-eye-fill"></i>
                     </a>
                 </td>
@@ -67,7 +68,7 @@ async function saveNewRowSymptom(saveButton) {
     }
 }
 
-function cancelNewRowSymptom(cancelButton) {
+function cancelNewRow(cancelButton) {
     const row = cancelButton.closest("tr");
     row.remove(); // Удаляем строку
 }

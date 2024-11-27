@@ -1,4 +1,4 @@
-﻿function editRowDisease(editButton) {
+﻿function editRow(editButton) {
     const row = editButton.closest('tr');
     const cells = row.querySelectorAll('td[contenteditable]');
     const isEditing = row.classList.contains('editing');
@@ -14,7 +14,7 @@
             consequences: cells[3].innerText.trim()
         };
 
-        saveChangesDisease(id, updatedData, row);
+        saveChanges(id, updatedData, row);
     } else {
         // Начало редактирования
         row.classList.add('editing');
@@ -28,14 +28,18 @@
         cancelButton.innerHTML = '<i class="bi bi-x-circle-fill"></i>'; // Иконка крестика
         cancelButton.title = "Cancel";
         cancelButton.className = "cancel-button";
-        cancelButton.onclick = () => cancelEditingDisease(row);
+        cancelButton.onclick = () => cancelEditing(row);
         row.querySelector('td:last-child').appendChild(cancelButton);
     }
 }
 
-async function saveChangesDisease(id, updatedData, row) {
+async function saveChanges(id, updatedData, row) {
     try {
-        await axios.put(`${apiBaseUrl}/${id}`, updatedData);
+        await axios.put(`${apiBaseUrl}/${id}`, updatedData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
         row.classList.remove('editing');
         const cells = row.querySelectorAll('td[contenteditable]');
         cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
@@ -53,7 +57,7 @@ async function saveChangesDisease(id, updatedData, row) {
     }
 }
 
-function cancelEditingDisease(row) {
+function cancelEditing(row) {
     const cells = row.querySelectorAll('td[contenteditable]');
     const originalData = JSON.parse(row.dataset.originalData);
 

@@ -1,9 +1,9 @@
 ﻿@page
 @{
-    Layout = "~/Pages/Shared/Layout.cshtml"; // Указываем путь к макету
-    ViewData["Title"] = "Список симптомов болезней";
+    Layout = "~/Pages/Shared/Tables.cshtml"; // Указываем путь к макету
+    ViewData["Title"] = "Симптомы и болезни";
 }
-<link rel = "stylesheet" href ="~/css/modal.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/modal_list.css" asp-append-version="true" />
 <div id="filter-container">
     <label for="filter-disease">Disease:</label>
     <input type="text" id="filter-disease" oninput="applyDiseaseSymptomFilters()">
@@ -11,16 +11,8 @@
     <label for="filter-symptom">Symptom:</label>
     <input type="text" id="filter-symptom" oninput="applyDiseaseSymptomFilters()">
 </div>
-<div id="disease-symptoms-container">
-    <!--Данные будут загружены сюда через JS -->
-</div>
-<div id="diseaseSymptomModal" class="modal">
-    <div class="modal-content">
-    <!--Здесь будет содержимое для отображения подробностей -->
-    </div>
-</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 <script rel="stylesheet" src="~/js/diseaseSymptoms/get.js" asp-append-version="true"></script>
 <script rel="stylesheet" src="~/js/diseaseSymptoms/edit.js" asp-append-version="true"></script>
 <script rel="stylesheet" src="~/js/diseaseSymptoms/create.js" asp-append-version="true"></script>
-<script rel="stylesheet" src="~/js/diseaseSymptoms/delete_and_info.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/diseaseSymptoms/info.js" asp-append-version="true"></script>

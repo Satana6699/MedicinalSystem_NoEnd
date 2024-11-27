@@ -3,10 +3,12 @@
 using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Application.Requests.Queries;
 using MedicinalSystem.Application.Requests.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedicinalSystem.Web.Controllers;
 
 [Route("api/genders")]
+[Authorize]
 [ApiController]
 public class GenderController : ControllerBase
 {
@@ -18,9 +20,9 @@ public class GenderController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null)
     {
-        var genders = await _mediator.Send(new GetGendersQuery());
+        var genders = await _mediator.Send(new GetGendersQuery(page, pageSize, name));
 
         return Ok(genders);
     }

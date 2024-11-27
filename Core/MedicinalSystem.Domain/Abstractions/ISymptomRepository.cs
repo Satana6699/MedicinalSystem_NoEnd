@@ -4,7 +4,6 @@ namespace MedicinalSystem.Domain.Abstractions;
 
 public interface ISymptomRepository 
 {
-    IQueryable<Symptom> Query();
     Task<IEnumerable<Symptom>> Get(bool trackChanges);
 	Task<Symptom?> GetById(Guid id, bool trackChanges);
     Task Create(Symptom entity);

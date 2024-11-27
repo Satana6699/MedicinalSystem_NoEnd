@@ -3,10 +3,12 @@
 using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Application.Requests.Queries;
 using MedicinalSystem.Application.Requests.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedicinalSystem.Web.Controllers;
 
 [Route("api/diseases")]
+[Authorize]
 [ApiController]
 public class DiseaseController : ControllerBase
 {
@@ -18,9 +20,14 @@ public class DiseaseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null)
     {
-        var diseases = await _mediator.Send(new GetDiseasesQuery());
+        if (page < 1 || pageSize < 1)
+        {
+            return BadRequest("Page and pageSize must be greater than zero.");
+        }
+
+        var diseases = await _mediator.Send(new GetDiseasesQuery(page, pageSize, name));
 
         return Ok(diseases);
     }

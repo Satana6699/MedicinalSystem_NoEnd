@@ -6,7 +6,7 @@ using MedicinalSystem.Application.Requests.Queries;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers;
 
-public class GetFamilyMembersQueryHandler : IRequestHandler<GetFamilyMembersQuery, IEnumerable<FamilyMemberDto>>
+public class GetFamilyMembersQueryHandler : IRequestHandler<GetFamilyMembersQuery, PagedResult<FamilyMemberDto>>
 {
 	private readonly IFamilyMemberRepository _repository;
 	private readonly IMapper _mapper;
@@ -17,6 +17,12 @@ public class GetFamilyMembersQueryHandler : IRequestHandler<GetFamilyMembersQuer
 		_mapper = mapper;
 	}
 
-	public async Task<IEnumerable<FamilyMemberDto>> Handle(GetFamilyMembersQuery request, CancellationToken cancellationToken) => 
-		_mapper.Map<IEnumerable<FamilyMemberDto>>(await _repository.Get(trackChanges: false));
+	public async Task<PagedResult<FamilyMemberDto>> Handle(GetFamilyMembersQuery request, CancellationToken cancellationToken)
+    {
+        var totalItems = await _repository.CountAsync(request.Name);
+        var familyMembers = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
+
+        var items = _mapper.Map<IEnumerable<FamilyMemberDto>>(familyMembers);
+        return new PagedResult<FamilyMemberDto>(items, totalItems, request.Page, request.PageSize);
+    }
 }

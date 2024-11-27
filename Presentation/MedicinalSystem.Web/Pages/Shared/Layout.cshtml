@@ -8,21 +8,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modal_info.css" asp-append-version="true" />
 </head>
 <body>
     <header>
         <nav class="navbar">
             <ul class="menu">
-                <li><a href="/Home/Index">Home</a></li>
-                <li><a href="/Tables/Diseases">Diseases</a></li>
-                <li><a href="/Tables/Symptoms?page=1&pageSize=10">Symptoms</a></li>
-                <li><a href="/Tables/DiseaseSymptoms?page=1&pageSize=10">Симптомы и Болезни</a></li>
+                <li><a href="/Home/Auth">Вход/Выход</a></li>
+                <li><a href="/Home/Index">Домой</a></li>
+                <li><a href="/Tables/Symptoms">Симптомы</a></li>
+                <li><a href="/Tables/Diseases">Болезни</a></li>
+                <li><a href="/Tables/Genders">Гендеры</a></li>
+                <li><a href="/Tables/Manufacturers">Производители</a></li>
+
+                <li><a href="/Tables/DiseaseSymptoms">Симптомы и Болезни</a></li>
+                <li><a href="/Tables/FamilyMembers">Члены семьи</a></li>
+                <li><a href="/Tables/MedicinePrices">Цены препоратов</a></li>
+                <li><a href="/Tables/Medicines">Препораты</a></li>
+                <li><a href="/Tables/Prescriptions">Рецепты</a></li>
+                <li><a href="/Tables/Treatments">Лечение</a></li>
+
             </ul>
         </nav>
     </header>
     <main>
         @RenderBody() <!-- Здесь будет вставлено содержимое дочерних страниц -->
+        <script rel="stylesheet" src="~/js/crud.js" asp-append-version="true"></script>
     </main>
     <footer>
         <p>&copy; 2024 Medicinal System</p>

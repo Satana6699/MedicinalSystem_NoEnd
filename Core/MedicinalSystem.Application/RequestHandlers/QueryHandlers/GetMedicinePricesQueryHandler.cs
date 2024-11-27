@@ -6,7 +6,7 @@ using MedicinalSystem.Application.Requests.Queries;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers;
 
-public class GetMedicinePricesQueryHandler : IRequestHandler<GetMedicinePricesQuery, IEnumerable<MedicinePriceDto>>
+public class GetMedicinePricesQueryHandler : IRequestHandler<GetMedicinePricesQuery, PagedResult<MedicinePriceDto>>
 {
 	private readonly IMedicinePriceRepository _repository;
 	private readonly IMapper _mapper;
@@ -17,6 +17,12 @@ public class GetMedicinePricesQueryHandler : IRequestHandler<GetMedicinePricesQu
 		_mapper = mapper;
 	}
 
-	public async Task<IEnumerable<MedicinePriceDto>> Handle(GetMedicinePricesQuery request, CancellationToken cancellationToken) => 
-		_mapper.Map<IEnumerable<MedicinePriceDto>>(await _repository.Get(trackChanges: false));
+	public async Task<PagedResult<MedicinePriceDto>> Handle(GetMedicinePricesQuery request, CancellationToken cancellationToken)
+    {
+        var totalItems = await _repository.CountAsync(request.Name);
+        var medicinePrices = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
+
+        var items = _mapper.Map<IEnumerable<MedicinePriceDto>>(medicinePrices);
+        return new PagedResult<MedicinePriceDto>(items, totalItems, request.Page, request.PageSize);
+    }
 }

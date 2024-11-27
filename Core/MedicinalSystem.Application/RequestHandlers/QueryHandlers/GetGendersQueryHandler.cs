@@ -6,7 +6,7 @@ using MedicinalSystem.Application.Requests.Queries;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers;
 
-public class GetGendersQueryHandler : IRequestHandler<GetGendersQuery, IEnumerable<GenderDto>>
+public class GetGendersQueryHandler : IRequestHandler<GetGendersQuery, PagedResult<GenderDto>>
 {
 	private readonly IGenderRepository _repository;
 	private readonly IMapper _mapper;
@@ -17,6 +17,12 @@ public class GetGendersQueryHandler : IRequestHandler<GetGendersQuery, IEnumerab
 		_mapper = mapper;
 	}
 
-	public async Task<IEnumerable<GenderDto>> Handle(GetGendersQuery request, CancellationToken cancellationToken) => 
-		_mapper.Map<IEnumerable<GenderDto>>(await _repository.Get(trackChanges: false));
+	public async Task<PagedResult<GenderDto>> Handle(GetGendersQuery request, CancellationToken cancellationToken)
+    {
+        var totalItems = await _repository.CountAsync(request.Name);
+        var genders = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
+
+        var items = _mapper.Map<IEnumerable<GenderDto>>(genders);
+        return new PagedResult<GenderDto>(items, totalItems, request.Page, request.PageSize);
+    }
 }

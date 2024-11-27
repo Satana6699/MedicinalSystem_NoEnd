@@ -12,8 +12,8 @@ public class DiseaseSymptomRepository(AppDbContext dbContext) : IDiseaseSymptomR
 
     public async Task<IEnumerable<DiseaseSymptom>> Get(bool trackChanges) =>
         await (!trackChanges 
-            ? _dbContext.DiseaseSymptoms.Include(e => e.Disease).Include(e => e.Symptom).AsNoTracking() 
-            : _dbContext.DiseaseSymptoms.Include(e => e.Disease).Include(e => e.Symptom)).ToListAsync();
+            ? _dbContext.DiseaseSymptoms.Include(e => e.Disease).Include(e => e.Symptom).OrderBy(d => d.Id).AsNoTracking() 
+            : _dbContext.DiseaseSymptoms.Include(e => e.Disease).Include(e => e.Symptom).OrderBy(d => d.Id)).ToListAsync();
 
     public async Task<DiseaseSymptom?> GetById(Guid id, bool trackChanges) =>
         await (!trackChanges ?
@@ -42,7 +42,7 @@ public class DiseaseSymptomRepository(AppDbContext dbContext) : IDiseaseSymptomR
 
     public async Task<IEnumerable<DiseaseSymptom>> GetPageAsync(int page, int pageSize, string? nameDisease, string? nameSymptom)
     {
-        var diseaseSymptoms = await _dbContext.DiseaseSymptoms.Include(d => d.Disease).Include(s => s.Symptom).ToListAsync();
+        var diseaseSymptoms = await _dbContext.DiseaseSymptoms.Include(d => d.Disease).Include(s => s.Symptom).OrderBy(d => d.Id).ToListAsync();
 
         if (!string.IsNullOrWhiteSpace(nameDisease))
         {

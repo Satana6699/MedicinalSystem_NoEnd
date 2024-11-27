@@ -10,6 +10,7 @@ header {
     background-color: #333;
     color: white;
     padding: 10px 0;
+    font-size: 0.8em; 
 }
 
 .navbar {
@@ -53,4 +54,30 @@ footer {
 }
 a {
     text-decoration: none;
+}
+
+.dropdown-container {
+    position: absolute;
+    z-index: 100;
+    background-color: white;
+    border: 1px solid #ccc;
+    width: 200px;
+    max-height: 150px;
+    overflow-y: auto;
+    display: none;
+}
+
+.dropdown-item {
+    padding: 8px;
+    cursor: pointer;
+}
+
+    .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
+
+.search-input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
 }

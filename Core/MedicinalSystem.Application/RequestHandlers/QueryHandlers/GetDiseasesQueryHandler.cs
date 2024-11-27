@@ -6,17 +6,23 @@ using MedicinalSystem.Application.Requests.Queries;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers;
 
-public class GetDiseasesQueryHandler : IRequestHandler<GetDiseasesQuery, IEnumerable<DiseaseDto>>
+public class GetDiseasesQueryHandler : IRequestHandler<GetDiseasesQuery, PagedResult<DiseaseDto>>
 {
-	private readonly IDiseaseRepository _repository;
-	private readonly IMapper _mapper;
+    private readonly IDiseaseRepository _repository;
+    private readonly IMapper _mapper;
 
-	public GetDiseasesQueryHandler(IDiseaseRepository repository, IMapper mapper)
-	{
-		_repository = repository;
-		_mapper = mapper;
-	}
+    public GetDiseasesQueryHandler(IDiseaseRepository repository, IMapper mapper)
+    {
+        _repository = repository;
+        _mapper = mapper;
+    }
 
-	public async Task<IEnumerable<DiseaseDto>> Handle(GetDiseasesQuery request, CancellationToken cancellationToken) => 
-		_mapper.Map<IEnumerable<DiseaseDto>>(await _repository.Get(trackChanges: false));
+    public async Task<PagedResult<DiseaseDto>> Handle(GetDiseasesQuery request, CancellationToken cancellationToken)
+    {
+        var totalItems = await _repository.CountAsync(request.Name);
+        var symptoms = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
+
+        var items = _mapper.Map<IEnumerable<DiseaseDto>>(symptoms);
+        return new PagedResult<DiseaseDto>(items, totalItems, request.Page, request.PageSize);
+    }
 }

@@ -3,10 +3,12 @@
 using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Application.Requests.Queries;
 using MedicinalSystem.Application.Requests.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedicinalSystem.Web.Controllers;
 
 [Route("api/symptoms")]
+[Authorize]
 [ApiController]
 public class SymptomController : ControllerBase
 {
@@ -17,14 +19,6 @@ public class SymptomController : ControllerBase
         _mediator = mediator;
     }
 
-    //[HttpGet]
-    //public async Task<IActionResult> Get()
-    //{
-    //    var symptoms = await _mediator.Send(new GetSymptomsQuery());
-
-    //    return Ok(symptoms);
-    //}
-
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null)
     {
@@ -33,8 +27,7 @@ public class SymptomController : ControllerBase
             return BadRequest("Page and pageSize must be greater than zero.");
         }
 
-        var query = new GetSymptomsQuery(page, pageSize, name);
-        var result = await _mediator.Send(query);
+        var result = await _mediator.Send(new GetSymptomsQuery(page, pageSize, name));
 
         return Ok(result);
     }
@@ -53,6 +46,7 @@ public class SymptomController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] SymptomForCreationDto? symptom)
     {
         if (symptom is null)
@@ -66,6 +60,7 @@ public class SymptomController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(Guid id, [FromBody] SymptomForUpdateDto? symptom)
     {
         if (symptom is null)
@@ -84,6 +79,7 @@ public class SymptomController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteSymptomCommand(id));

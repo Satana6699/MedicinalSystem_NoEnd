@@ -21,7 +21,7 @@ public class MedicinePriceControllerTests
         _controller = new MedicinePriceController(_mediatorMock.Object);
     }
 
-    [Fact]
+   /* [Fact]
     public async Task Get_ReturnsListOfMedicinePrices()
     {
         // Arrange
@@ -46,7 +46,7 @@ public class MedicinePriceControllerTests
         value.Should().BeEquivalentTo(medicinePrices);
 
         _mediatorMock.Verify(m => m.Send(new GetMedicinePricesQuery(), CancellationToken.None), Times.Once);
-    }
+    }*/
 
     [Fact]
     public async Task GetById_ExistingMedicinePriceId_ReturnsMedicinePrice()

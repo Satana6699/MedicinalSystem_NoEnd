@@ -10,5 +10,7 @@ public interface IManufacturerRepository
     void Delete(Manufacturer entity);
     void Update(Manufacturer entity);
     Task SaveChanges();
+    Task<IEnumerable<Manufacturer>> GetPageAsync(int page, int pageSize, string? name);
+    Task<int> CountAsync(string? name);
 }
 
