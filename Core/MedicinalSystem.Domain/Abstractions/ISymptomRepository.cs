@@ -1,4 +1,3 @@
-using MedicinalSystem.Application.Dtos;
 using MedicinalSystem.Domain.Entities;
 namespace MedicinalSystem.Domain.Abstractions;
 

@@ -6,10 +6,16 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{39D81370-F478-49AB-B1FA-46F2543C06B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinalSystem.Web", "Presentation\MedicinalSystem.Web\MedicinalSystem.Web.csproj", "{F03BB5BC-F4CF-4AD1-B5C4-7D8DC4ACDB38}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A1F21F47-160C-4869-B4D7-2508C24E4F32} = {A1F21F47-160C-4869-B4D7-2508C24E4F32}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{DA69377B-D956-4137-B27B-7DB3336D9D9C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinalSystem.Infrastructure", "Infrastructure\MedicinalSystem.Infrastructure\MedicinalSystem.Infrastructure.csproj", "{D267B1E2-A243-4239-80A6-A08078BBA982}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A8178BF3-36AE-4083-A93B-C0AE311238F7} = {A8178BF3-36AE-4083-A93B-C0AE311238F7}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1969811A-BA48-46BE-A4E3-4F3571A33D4B}"
 EndProject
