@@ -54,7 +54,8 @@ async function saveChanges(id, updatedData, row) {
 
         if (cancelButton) cancelButton.remove();
     } catch (error) {
-        console.error("Error saving changes:", error);
-        alert("Failed to save changes. Please try again.");
+        console.error("Ошибка сохранения изменений:", error);
+        alert("Не удалось сохранить изменения. Повторите попытку позже.");
     }
 }
+

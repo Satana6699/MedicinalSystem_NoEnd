@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MedicinalSystem.Domain.Entities;
+using Microsoft.Extensions.Options;
 
 namespace MedicinalSystem.Infrastructure;
 
@@ -15,5 +16,6 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 	public DbSet<Symptom> Symptoms { get; set; }
 	public DbSet<DiseaseSymptom> DiseaseSymptoms { get; set; }
 	public DbSet<Treatment> Treatments { get; set; }
+    public DbSet<User> Users { get; set; }
 }
 
