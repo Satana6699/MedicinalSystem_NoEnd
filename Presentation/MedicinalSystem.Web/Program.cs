@@ -1,7 +1,7 @@
 using AutoMapper;
 using MedicinalSystem.Application;
 using MedicinalSystem.Web.Extensions;
-using MedicinalSystem.Application.Requests.Queries;
+using MedicinalSystem.Application.Requests.Queries.Manufacturers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

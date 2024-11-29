@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MedicinalSystem.Application.Dtos.Auth;
+using MedicinalSystem.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,30 +12,89 @@ using System.Text;
 [ApiController]
 public class AuthController : ControllerBase
 {
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
     {
+        _userManager = userManager;
+        _signInManager = signInManager;
         _configuration = configuration;
+    }
+
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Register([FromBody] RegisterDto register)
+    {
+        // Проверяем входные данные
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        // Проверка на существующего пользователя
+        var existingUser = await _userManager.FindByNameAsync(register.UserName);
+        if (existingUser != null)
+        {
+            return BadRequest("Пользователь с таким именем уже существует");
+        }
+
+        // Создаём объект пользователя
+        var user = new User
+        {
+            UserName = register.UserName,
+            Email = register.Email,
+            FirstName = register.FirstName,
+            LastName = register.LastName,
+        };
+
+        // Создаём пользователя с помощью UserManager
+        var result = await _userManager.CreateAsync(user, register.Password);
+
+        if (!result.Succeeded)
+        {
+            // Если возникли ошибки, возвращаем их
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return BadRequest(ModelState);
+        }
+
+        // Назначаем роль (например, роль "user")
+        await _userManager.AddToRoleAsync(user, "user");
+
+        // Генерируем JWT-токен для нового пользователя
+        var token = GenerateJwtToken(user.UserName, "user");
+
+        // Возвращаем токен и информацию о пользователе
+        return Ok(new
+        {
+            Token = token,
+            Role = "user",
+            Username = user.UserName
+        });
     }
 
     [HttpPost("login")]
     [AllowAnonymous]
-    public IActionResult Login([FromBody] LoginDto login)
+    public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-        // Пример проверки пользователя
-        if (login.Username == "admin" && login.Password == "admin")
+        var user = await _userManager.FindByNameAsync(model.UserName);
+
+        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
         {
-            var token = GenerateJwtToken(login.Username, "Admin");
-            return Ok(new { Token = token, Role = "admin", });
+            var token = GenerateJwtToken(user.UserName, user.Id);
+            return Ok(new { Token = token });
         }
-        if (login.Username == "user" && login.Password == "user")
-        {
-            var token = GenerateJwtToken(login.Username, "user");
-            return Ok(new { Token = token, Role = "user", });
-        }
-        return Unauthorized();
+
+        return Unauthorized("Неверное имя пользователя или пароль");
     }
 
     private string GenerateJwtToken(string username, string role)
@@ -60,10 +122,4 @@ public class AuthController : ControllerBase
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-}
-
-public class LoginDto
-{
-    public string Username { get; set; }
-    public string Password { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿using Bogus;
 using MedicinalSystem.Domain.Entities;
-using MedicinalSystem.Infrastructure;
+using MedicinalSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 public class DatabaseSeeder

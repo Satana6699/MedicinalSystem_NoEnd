@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MedicinalSystem.Domain.Entities;
 using MedicinalSystem.Domain.Abstractions;
 
-namespace MedicinalSystem.Infrastructure.Repositories;
+namespace MedicinalSystem.Infrastructure.Data.Repositories;
 
 public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
 {

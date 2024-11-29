@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MedicinalSystem.Infrastructure.Migrations
+namespace MedicinalSystem.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
     public partial class NewMig : Migration

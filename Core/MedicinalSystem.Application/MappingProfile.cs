@@ -1,6 +1,15 @@
 ﻿using AutoMapper;
 using MedicinalSystem.Domain.Entities;
-using MedicinalSystem.Application.Dtos;
+using MedicinalSystem.Application.Dtos.Diseases;
+using MedicinalSystem.Application.Dtos.DiseaseSymptoms;
+using MedicinalSystem.Application.Dtos.FamilyMembers;
+using MedicinalSystem.Application.Dtos.Genders;
+using MedicinalSystem.Application.Dtos.Manufacturers;
+using MedicinalSystem.Application.Dtos.Medicines;
+using MedicinalSystem.Application.Dtos.MedicinePrices;
+using MedicinalSystem.Application.Dtos.Prescriptions;
+using MedicinalSystem.Application.Dtos.Symptoms;
+using MedicinalSystem.Application.Dtos.Treatments;
 
 namespace MedicinalSystem.Application;
 

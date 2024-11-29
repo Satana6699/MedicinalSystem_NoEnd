@@ -15,4 +15,11 @@
     <ProjectReference Include="..\MedicinalSystem.Domain\MedicinalSystem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="RequestHandlers\CommandHandlers\Auth\" />
+    <Folder Include="RequestHandlers\QueryHandlers\Auth\" />
+    <Folder Include="Requests\Commands\Auth\" />
+    <Folder Include="Requests\Queries\Auth\" />
+  </ItemGroup>
+
 </Project>

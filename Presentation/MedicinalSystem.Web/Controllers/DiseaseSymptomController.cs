@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-﻿using MediatR;
-using MedicinalSystem.Application.Dtos;
-using MedicinalSystem.Application.Requests.Queries;
-using MedicinalSystem.Application.Requests.Commands;
+using MediatR;
+using MedicinalSystem.Application.Requests.Queries.Diseases;
+using MedicinalSystem.Application.Requests.Commands.Diseases;
+using MedicinalSystem.Application.Requests.Queries.Symptoms;
+using MedicinalSystem.Application.Requests.Commands.Symptoms;
+using MedicinalSystem.Application.Requests.Queries.DiseaseSymptoms;
+using MedicinalSystem.Application.Requests.Commands.DiseaseSymptoms;
 using Bogus.DataSets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using MedicinalSystem.Application.Dtos.DiseaseSymptoms;
 
 namespace MedicinalSystem.Web.Controllers;
 

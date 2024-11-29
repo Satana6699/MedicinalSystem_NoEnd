@@ -5,7 +5,7 @@ using MedicinalSystem.Domain.Abstractions;
 using Azure.Core;
 using Bogus.DataSets;
 
-namespace MedicinalSystem.Infrastructure.Repositories;
+namespace MedicinalSystem.Infrastructure.Data.Repositories;
 
 public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
 {

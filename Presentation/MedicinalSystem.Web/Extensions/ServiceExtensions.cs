@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MedicinalSystem.Infrastructure;
-using MedicinalSystem.Infrastructure.Repositories;
+using MedicinalSystem.Infrastructure.Data;
+using MedicinalSystem.Infrastructure.Data.Repositories;
 using MedicinalSystem.Domain.Abstractions;
 
 namespace MedicinalSystem.Web.Extensions;
