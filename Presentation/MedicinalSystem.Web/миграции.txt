@@ -1,3 +1,3 @@
-dotnet ef migrations add AddUsersTable --project Infrastructure\MedicinalSystem.Infrastructure\MedicinalSystem.Infrastructure.csproj --startup-project Presentation\MedicinalSystem.Web\MedicinalSystem.Web.csproj --output-dir Migrations
+dotnet ef migrations add NewMig --project Infrastructure\MedicinalSystem.Infrastructure\MedicinalSystem.Infrastructure.csproj --startup-project Presentation\MedicinalSystem.Web\MedicinalSystem.Web.csproj --output-dir Migrations
 
 dotnet ef database update --project Infrastructure\MedicinalSystem.Infrastructure\MedicinalSystem.Infrastructure.csproj --startup-project Presentation\MedicinalSystem.Web\MedicinalSystem.Web.csproj

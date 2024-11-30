@@ -13,12 +13,14 @@
 
 namespace MedicinalSystem.Domain.Entities
 {
-    public class User : IdentityUser
+    public class User
     {
         // Дополнительные поля, которые могут понадобиться для пользователя
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
+        public Guid Id { get; set; }
+        public string? FullName { get; set; }
+        public string? UserName { get; set; }
+        public string? Password { get; set; }
+        public DateTime PasswordTime { get; set; }
+        public string? Role { get; set; }
     }
 }

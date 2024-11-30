@@ -4,14 +4,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using MedicinalSystem.Domain.Entities;
 
-namespace MedicinalSystem.Infrastructure.Data;
+namespace MedicinalSystem.Infrastructure;
 
-public class AppDbContext : IdentityDbContext<User>
+public class AppDbContext(DbContextOptions options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<Manufacturer> Manufacturers { get; set; }
 	public DbSet<Medicine> Medicines { get; set; }
 	public DbSet<MedicinePrice> MedicinePrices { get; set; }

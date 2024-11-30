@@ -28,7 +28,7 @@
     container.appendChild(table);
 
     const editButtons = document.querySelectorAll('.edit-buttons');
-    if (localStorage.getItem('role') === 'admin') {
+    if (localStorage.getItem('role') === 'Admin') {
         // Показать все кнопки редактирования
         editButtons.forEach(button => {
             button.style.display = 'inline-block'; // или block, в зависимости от желаемого поведения

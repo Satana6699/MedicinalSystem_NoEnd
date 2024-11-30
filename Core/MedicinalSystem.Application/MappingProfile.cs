@@ -10,6 +10,7 @@ using MedicinalSystem.Application.Dtos.MedicinePrices;
 using MedicinalSystem.Application.Dtos.Prescriptions;
 using MedicinalSystem.Application.Dtos.Symptoms;
 using MedicinalSystem.Application.Dtos.Treatments;
+using MedicinalSystem.Application.Dtos.Users;
 
 namespace MedicinalSystem.Application;
 
@@ -56,6 +57,10 @@ public class MappingProfile : Profile
 		CreateMap<Treatment, TreatmentDto>();
 		CreateMap<TreatmentForCreationDto, Treatment>();
 		CreateMap<TreatmentForUpdateDto, Treatment>();
+
+		CreateMap<User, UserDto>();
+		CreateMap<UserForCreationDto, User>();
+		CreateMap<UserForUpdateDto, User>();
     }
 }
 

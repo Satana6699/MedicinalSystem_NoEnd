@@ -1,102 +1,94 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using MedicinalSystem.Application.Dtos.Auth;
+using Microsoft.Extensions.Configuration;
+using MediatR;
+using MedicinalSystem.Application.Dtos.Users;
 using MedicinalSystem.Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.CodeAnalysis.Scripting;
+using BCrypt.Net;
+using MedicinalSystem.Application.Requests.Commands.Users;
+using MedicinalSystem.Application.Requests.Queries.Users;
+using MedicinalSystem.Application.Requests.Commands.Treatments;
+using Bogus.DataSets;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 [Route("api/auth")]
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
+    private readonly IMediator _mediator;
 
-    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+    public AuthController(IConfiguration configuration, IMediator mediator)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
         _configuration = configuration;
+        _mediator = mediator;
     }
-
-    [HttpPost("register")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] RegisterDto register)
+    [HttpGet]
+    public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null)
     {
-        // Проверяем входные данные
-        if (!ModelState.IsValid)
+        if (page < 1 || pageSize < 1)
         {
-            return BadRequest(ModelState);
+            return BadRequest("Page и pageSize должны быть больше нуля.");
         }
 
-        // Проверка на существующего пользователя
-        var existingUser = await _userManager.FindByNameAsync(register.UserName);
-        if (existingUser != null)
+        var diseases = await _mediator.Send(new GetUsersQuery(page, pageSize, name));
+
+        return Ok(diseases);
+    }
+
+    [HttpGet("login")]
+    public async Task<IActionResult> Login([FromQuery] string? userName = "", [FromQuery] string? password = "")
+    {
+        var users = await _mediator.Send(new GetUsersAllQuery(userName));
+        if (users.Count() == 0)
+        {
+            return NotFound($"Неверный логин");
+        }
+        var user = users.FirstOrDefault();
+        // Проверяем пароль
+        if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
+        {
+            return Unauthorized("Неверный пароль");
+        }
+
+        // Генерируем JWT-токен
+        var token = GenerateJwtToken(user.UserName, user.Role);
+
+        return Ok(new { Token = token, Role = user.Role });
+    }
+    [Route("register")]
+    [HttpPost]
+    public async Task<IActionResult> Register([FromBody] UserForCreationDto? register)
+    {
+        var users = await _mediator.Send(new GetUsersAllQuery(register.UserName));
+        if (users.Count() != 0)
         {
             return BadRequest("Пользователь с таким именем уже существует");
         }
-
+        if (register is null)
+        {
+            return BadRequest("Нет данных");
+        }
+        // Хэшируем пароль
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(register.Password);
         // Создаём объект пользователя
-        var user = new User
+        var newuser = new UserForCreationDto
         {
             UserName = register.UserName,
-            Email = register.Email,
-            FirstName = register.FirstName,
-            LastName = register.LastName,
+            FullName = register.FullName,
+            Password = hashedPassword,
+            PasswordTime = new DateTime(1, 1, 1, 1, 1, 1),
+            Role = "user"
         };
+        await _mediator.Send(new CreateUserCommand(newuser));
 
-        // Создаём пользователя с помощью UserManager
-        var result = await _userManager.CreateAsync(user, register.Password);
-
-        if (!result.Succeeded)
-        {
-            // Если возникли ошибки, возвращаем их
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return BadRequest(ModelState);
-        }
-
-        // Назначаем роль (например, роль "user")
-        await _userManager.AddToRoleAsync(user, "user");
-
-        // Генерируем JWT-токен для нового пользователя
-        var token = GenerateJwtToken(user.UserName, "user");
-
-        // Возвращаем токен и информацию о пользователе
-        return Ok(new
-        {
-            Token = token,
-            Role = "user",
-            Username = user.UserName
-        });
+        return CreatedAtAction(nameof(Register), newuser);
     }
-
-    [HttpPost("login")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Login([FromBody] LoginDto model)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var user = await _userManager.FindByNameAsync(model.UserName);
-
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
-        {
-            var token = GenerateJwtToken(user.UserName, user.Id);
-            return Ok(new { Token = token });
-        }
-
-        return Unauthorized("Неверное имя пользователя или пароль");
-    }
-
     private string GenerateJwtToken(string username, string role)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");

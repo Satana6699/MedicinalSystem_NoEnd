@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedicinalSystem.Application.Dtos.Auth
+namespace MedicinalSystem.Application.Dtos.Users
 {
-    public class LoginDto
+    public class UserDto
     {
         [Required(ErrorMessage = "Имя пользователя обязательно")]
         public string UserName { get; set; }

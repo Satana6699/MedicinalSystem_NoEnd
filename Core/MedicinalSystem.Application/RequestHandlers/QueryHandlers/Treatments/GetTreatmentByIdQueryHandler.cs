@@ -6,12 +6,12 @@ using MedicinalSystem.Application.Dtos.Treatments;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers.Treatments;
 
-public class GetTreatmentByIdQueryHandler : IRequestHandler<GetTreatmentByIdQuery, TreatmentDto?>
+public class GetUserByIdQueryHandler : IRequestHandler<GetTreatmentByIdQuery, TreatmentDto?>
 {
     private readonly ITreatmentRepository _repository;
     private readonly IMapper _mapper;
 
-    public GetTreatmentByIdQueryHandler(ITreatmentRepository repository, IMapper mapper)
+    public GetUserByIdQueryHandler(ITreatmentRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;

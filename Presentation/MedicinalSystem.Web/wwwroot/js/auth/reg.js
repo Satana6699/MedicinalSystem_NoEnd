@@ -1,44 +1,32 @@
 ﻿document.getElementById('registerForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const username = document.getElementById('registerUsername').value;
-    const firstName = document.getElementById('registerFirstName').value;
-    const lastName = document.getElementById('registerLastName').value;
-    const email = document.getElementById('registerEmail').value;
+    const userName = document.getElementById('registerUsername').value;
+    const fullName = document.getElementById('registerFullName').value;
     const password = document.getElementById('registerPassword').value;
     const errorMsg = document.getElementById('registerErrorMsg');
     const newUser = {
-        userName: username,
-        emai: email,
+        userName: userName,
+        fullName: fullName,
         password: password,
-        firstName: firstName,
-        lastName: lastName
+        role: "",
+        passwordTime: new Date(),
     };
 
     // Clear previous error message
     errorMsg.style.display = 'none';
 
     try {
-        const response = await axios.post('/api/auth/register', newUser, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            //headers: {
-            //    'Content-Type': 'application/json'
-            //},
-        });
+        const response = await axios.post('/api/auth/register', newUser);
 
-        if (!response.ok) {
-            throw new Error('Failed to register');
+        if (typeof response.ok !== "undefined" && !response.ok) {
+            throw new Error('Ошибка регистрации');
         }
 
-        const data = await response.json();
-        // Store token and role in localStorage
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.role);
-
-        displayLogoutButton();
+        alert('Регистрация прошла успешно, теперь можете войти в аккаунт');
     } catch (error) {
+        console.error("Error fetching symptoms:", error);
+
         errorMsg.style.display = 'block';
         errorMsg.textContent = error.message;
     }

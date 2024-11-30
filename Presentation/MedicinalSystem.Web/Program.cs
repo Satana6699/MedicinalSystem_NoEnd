@@ -105,6 +105,18 @@ app.MapFallbackToPage("/Home/Index"); // Указывает на страницу Home.cshtml как н
 // Включить авторизацию
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+    // Определяем маршруты API отдельно
+    endpoints.MapControllerRoute(
+        name: "api",
+        pattern: "api/{controller}/{action}/{id?}");
+
+    // Общий маршрут для других контроллеров
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 
 // Запуск приложения
 app.Run();

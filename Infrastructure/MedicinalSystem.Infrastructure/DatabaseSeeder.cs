@@ -1,7 +1,12 @@
 ﻿using Bogus;
 using MedicinalSystem.Domain.Entities;
-using MedicinalSystem.Infrastructure.Data;
+using MedicinalSystem.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using BCrypt.Net;
+using MedicinalSystem.Application.Dtos.Users;
+using Microsoft.Win32;
+using Gender = MedicinalSystem.Domain.Entities.Gender;
+using static Bogus.DataSets.Name;
 
 public class DatabaseSeeder
 {
@@ -17,7 +22,28 @@ public class DatabaseSeeder
         // Автоматически применяем миграции
         await _context.Database.MigrateAsync();
 
+
         // Генерация данных
+        if (!_context.Users.Any())
+        {
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword("admin");
+            // Создаём объект пользователя
+            var admin = new User
+            {
+                UserName = "admin",
+                FullName = "admon",
+                Password = hashedPassword,
+                PasswordTime = new DateTime(1, 1, 1, 1, 1, 1),
+                Role = "Admin"
+            };
+
+
+            await _context.Users.AddAsync(admin);
+            await _context.SaveChangesAsync();
+        }
+            
+            
+            // Генерация данных
         if (!_context.Genders.Any())
         {
             var genders = new Faker<Gender>("ru")

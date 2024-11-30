@@ -7,12 +7,12 @@ using MedicinalSystem.Application.Requests.Queries.Symptoms;
 
 namespace MedicinalSystem.Application.RequestHandlers.QueryHandlers.Symptoms;
 
-public class GetSymptomsAllQueryHandler : IRequestHandler<GetSymptomsAllQuery, IEnumerable<SymptomDto>>
+public class GetUsersAllQueryHandler : IRequestHandler<GetSymptomsAllQuery, IEnumerable<SymptomDto>>
 {
     private readonly ISymptomRepository _repository;
     private readonly IMapper _mapper;
 
-    public GetSymptomsAllQueryHandler(ISymptomRepository repository, IMapper mapper)
+    public GetUsersAllQueryHandler(ISymptomRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;

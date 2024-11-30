@@ -22,27 +22,30 @@ function displayAuthForm() {
 
     document.getElementById('authForm').addEventListener('submit', async function (e) {
         e.preventDefault();
-        const username = document.getElementById('username').value;
+        const userName = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         const errorMsg = document.getElementById('errorMsg');
-
+        const login = {
+            userName: userName,
+            password: password,
+        }
         // Clear previous error message
         errorMsg.style.display = 'none';
 
         try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+            const response = await axios.get('/api/auth/login', {
+                params:
+                {
+                    userName: userName,
+                    password: password,
                 },
-                body: JSON.stringify({ username, password })
             });
 
-            if (!response.ok) {
+            if (typeof(response.ok) !== "undefined" && !response.ok) {
                 throw new Error('Invalid credentials');
             }
 
-            const data = await response.json();
+            const data = await response.data;
             // Store token in localStorage
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.role);
@@ -82,7 +85,7 @@ function displayLogoutButton() {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         // Redirect to login page
-        window.location.href = '/login';
+        window.location.href = '/Home/Index';
     });
 
     // Append Logout button to the container
