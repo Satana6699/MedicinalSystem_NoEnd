@@ -26,19 +26,34 @@ public class DatabaseSeeder
         // Генерация данных
         if (!_context.Users.Any())
         {
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword("admin");
             // Создаём объект пользователя
             var admin = new User
             {
                 UserName = "admin",
-                FullName = "admon",
-                Password = hashedPassword,
+                FullName = "admin",
+                Password = BCrypt.Net.BCrypt.HashPassword("admin"),
                 PasswordTime = new DateTime(1, 1, 1, 1, 1, 1),
                 Role = "Admin"
             };
-
-
             await _context.Users.AddAsync(admin);
+
+            List<User> users = new List<User>();
+            for (int i = 0; i < 100;  i++)
+            {
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword("user_" + i);
+                // Создаём объект пользователя
+                var user = new User
+                {
+                    UserName = "user_" + i,
+                    FullName = "user_" + i,
+                    Password = hashedPassword,
+                    PasswordTime = new DateTime(1, 1, 1, 1, 1, 1),
+                    Role = "user"
+                };
+                users.Add(user);
+            }
+            await _context.Users.AddRangeAsync(users);
+
             await _context.SaveChangesAsync();
         }
             

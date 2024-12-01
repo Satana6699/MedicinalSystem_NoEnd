@@ -25,10 +25,7 @@ function displayAuthForm() {
         const userName = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         const errorMsg = document.getElementById('errorMsg');
-        const login = {
-            userName: userName,
-            password: password,
-        }
+        
         // Clear previous error message
         errorMsg.style.display = 'none';
 
@@ -50,7 +47,20 @@ function displayAuthForm() {
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.role);
 
+            const accountLink = document.querySelector('a[href="/Home/Auth"]');
+
+            // Проверяем, что ссылка найдена
+            if (accountLink) {
+                // Меняем текст содержимого
+                accountLink.textContent = data.userName;
+                localStorage.setItem('accountLinkText', data.userName);
+            }
+
             displayLogoutButton();
+
+            // Перезагрузка страницы
+            location.reload();
+
         } catch (error) {
             errorMsg.style.display = 'block';
             errorMsg.textContent = error.message;
@@ -84,6 +94,7 @@ function displayLogoutButton() {
         // Remove token from localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        localStorage.removeItem('accountLinkText');
         // Redirect to login page
         window.location.href = '/Home/Index';
     });

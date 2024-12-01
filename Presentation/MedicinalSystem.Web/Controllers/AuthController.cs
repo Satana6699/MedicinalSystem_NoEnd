@@ -12,11 +12,11 @@ using Microsoft.CodeAnalysis.Scripting;
 using BCrypt.Net;
 using MedicinalSystem.Application.Requests.Commands.Users;
 using MedicinalSystem.Application.Requests.Queries.Users;
-using MedicinalSystem.Application.Requests.Commands.Treatments;
 using Bogus.DataSets;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 [Route("api/auth")]
+[Authorize(Roles = "Admin")]
 [ApiController]
 public class AuthController : ControllerBase
 {
@@ -36,9 +36,9 @@ public class AuthController : ControllerBase
             return BadRequest("Page и pageSize должны быть больше нуля.");
         }
 
-        var diseases = await _mediator.Send(new GetUsersQuery(page, pageSize, name));
+        var users = await _mediator.Send(new GetUsersQuery(page, pageSize, name));
 
-        return Ok(diseases);
+        return Ok(users);
     }
 
     [HttpGet("login")]
@@ -59,7 +59,7 @@ public class AuthController : ControllerBase
         // Генерируем JWT-токен
         var token = GenerateJwtToken(user.UserName, user.Role);
 
-        return Ok(new { Token = token, Role = user.Role });
+        return Ok(new { Token = token, Role = user.Role, UserName = user.UserName });
     }
     [Route("register")]
     [HttpPost]
@@ -88,6 +88,36 @@ public class AuthController : ControllerBase
         await _mediator.Send(new CreateUserCommand(newuser));
 
         return CreatedAtAction(nameof(Register), newuser);
+    }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody][Bind("Id,UserName,FullName,Role")] UserForUpdateDto? user)
+    {
+        if (user is null)
+        {
+            return BadRequest("Object for update is null");
+        }
+
+        var isEntityFound = await _mediator.Send(new UpdateUserCommand(user));
+
+        if (!isEntityFound)
+        {
+            return NotFound($"User with id {id} is not found.");
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var isEntityFound = await _mediator.Send(new DeleteUserCommand(id));
+
+        if (!isEntityFound)
+        {
+            return NotFound($"User with id {id} is not found.");
+        }
+
+        return NoContent();
     }
     private string GenerateJwtToken(string username, string role)
     {

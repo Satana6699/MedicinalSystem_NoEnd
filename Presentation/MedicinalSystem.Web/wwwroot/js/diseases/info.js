@@ -3,7 +3,7 @@
     const row = deleteButton.closest('tr');
     const id = row.dataset.id;
 
-    const modal = document.getElementById("modal-info");
+    const modal = document.getElementById("modal");
     const modalContent = modal.querySelector(".modal-info-content");
 
     modalContent.innerHTML = 
@@ -18,39 +18,4 @@
     `;
 
     modal.style.display = "block";
-}
-
-async function deleteRow(id)
-{
-    try {
-        const response = await axios.delete(`${apiBaseUrl}/${id}`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        });
-        if (response.status === 204) {
-            const row = document.querySelector(`tr[data-id="${id}"]`);
-            if (row) row.remove(); // Удаляем строку из таблицы
-            alert("Disease has been deleted successfully.");
-        } else {
-            alert("Failed to delete disease.");
-        }
-    } catch (error) {
-        console.error("Error deleting disease:", error);
-        if (error.response) {
-            // Ответ от сервера с ошибкой
-            alert(`Server error: ${error.response.status} - ${error.response.statusText}`);
-        } else {
-            // Ошибка запроса (например, нет соединения)
-            alert("Network error: Failed to delete disease.");
-        }
-    }
-
-    closeModal()
-}
-
-function closeModal()
-{
-    const modal = document.getElementById("modal-info");
-    modal.style.display = "none";
 }
