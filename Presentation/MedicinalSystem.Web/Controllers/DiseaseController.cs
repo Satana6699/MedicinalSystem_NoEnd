@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-﻿using MediatR;
-using MedicinalSystem.Application.Dtos;
-using MedicinalSystem.Application.Requests.Queries;
-using MedicinalSystem.Application.Requests.Commands;
+using MediatR;
+using MedicinalSystem.Application.Requests.Queries.Diseases;
+using MedicinalSystem.Application.Requests.Commands.Diseases;
 using Microsoft.AspNetCore.Authorization;
+using MedicinalSystem.Application.Dtos.Diseases;
 
 namespace MedicinalSystem.Web.Controllers;
 
@@ -24,7 +24,7 @@ public class DiseaseController : ControllerBase
     {
         if (page < 1 || pageSize < 1)
         {
-            return BadRequest("Page and pageSize must be greater than zero.");
+            return BadRequest("Page и pageSize должны быть больше нуля.");
         }
 
         var diseases = await _mediator.Send(new GetDiseasesQuery(page, pageSize, name));
@@ -39,7 +39,7 @@ public class DiseaseController : ControllerBase
 
         if (disease is null)
         {
-            return NotFound($"Disease with id {id} is not found.");
+            return NotFound($"Пользователь с id {id} не найдено.");
         }
         
         return Ok(disease);

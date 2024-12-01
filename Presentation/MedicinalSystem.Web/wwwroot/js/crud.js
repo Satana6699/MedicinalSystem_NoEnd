@@ -28,7 +28,7 @@
     container.appendChild(table);
 
     const editButtons = document.querySelectorAll('.edit-buttons');
-    if (localStorage.getItem('role') === 'admin') {
+    if (localStorage.getItem('role') === 'Admin') {
         // Показать все кнопки редактирования
         editButtons.forEach(button => {
             button.style.display = 'inline-block'; // или block, в зависимости от желаемого поведения
@@ -147,7 +147,7 @@ function closeModal() {
 }
 
 function ERROR(error){
-    if (error.response.status === 401) {
+    if (typeof error.response.status !== "undefined" && error.response.status === 401) {
         alert('Сначала требуется пройти авторизацию.');
         // Если код состояния 401, перенаправляем на страницу авторизации
         window.location.href = '/Home/Auth';
@@ -156,4 +156,26 @@ function ERROR(error){
     console.error("Error fetching symptoms:", error);
     document.getElementById("table-container").innerHTML =
         `<p>Error loading symptoms. Please try again later.</p>`;
+}
+function cancelEditing(row) {
+    const cells = row.querySelectorAll('td[contenteditable]');
+    const originalData = JSON.parse(row.dataset.originalData);
+
+    // Возвращаем исходные значения
+    cells.forEach((cell, index) => {
+        cell.innerText = originalData[index];
+        cell.setAttribute('contenteditable', 'false');
+    });
+
+    row.classList.remove('editing');
+
+    // Убираем кнопки сохранения и отмены
+    const editButton = row.querySelector('a[title="Save"]');
+    if (editButton) {
+        editButton.innerHTML = '<i class="bi bi-pencil-fill"></i>'; // Иконка редактирования
+        editButton.title = "Edit";
+    }
+
+    const cancelButton = row.querySelector('.cancel-button');
+    if (cancelButton) cancelButton.remove();
 }

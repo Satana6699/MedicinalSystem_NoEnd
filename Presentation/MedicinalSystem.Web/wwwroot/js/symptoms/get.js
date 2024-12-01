@@ -5,7 +5,7 @@ const itemsPerPage = 10; // Количество записей на стран�
 async function loadData(page = 1) {
     try {
         const nameFilter = document.getElementById("filter-name").value || "";
-
+        const token = localStorage.getItem('token');
         const response = await axios.get(`${apiBaseUrl}`, {
             params: {
                 page,
@@ -13,7 +13,7 @@ async function loadData(page = 1) {
                 name: nameFilter,
             },
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('token') }`,
+                Authorization: `Bearer ${token}`,
             },
         });
 

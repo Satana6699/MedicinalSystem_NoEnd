@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MedicinalSystem.Infrastructure.Migrations
+namespace MedicinalSystem.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -256,6 +256,32 @@ namespace MedicinalSystem.Infrastructure.Migrations
                     b.HasIndex("MedicineId");
 
                     b.ToTable("Treatments");
+                });
+
+            modelBuilder.Entity("MedicinalSystem.Domain.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PasswordTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("MedicinalSystem.Domain.Entities.DiseaseSymptom", b =>

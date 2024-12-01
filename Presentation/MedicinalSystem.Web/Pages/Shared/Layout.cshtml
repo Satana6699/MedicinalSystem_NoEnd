@@ -14,7 +14,7 @@
     <header>
         <nav class="navbar">
             <ul class="menu">
-                <li><a href="/Home/Auth">Вход/Выход</a></li>
+                <li><a href="/Home/Auth">Аккаунт</a></li>
                 <li><a href="/Home/Index">Домой</a></li>
                 <li><a href="/Tables/Symptoms">Симптомы</a></li>
                 <li><a href="/Tables/Diseases">Болезни</a></li>
@@ -27,13 +27,15 @@
                 <li><a href="/Tables/Medicines">Препораты</a></li>
                 <li><a href="/Tables/Prescriptions">Рецепты</a></li>
                 <li><a href="/Tables/Treatments">Лечение</a></li>
+                <li><a href="/Tables/Users">Пользователи</a></li>
 
             </ul>
         </nav>
     </header>
     <main>
-        @RenderBody() <!-- Здесь будет вставлено содержимое дочерних страниц -->
         <script rel="stylesheet" src="~/js/crud.js" asp-append-version="true"></script>
+        <script rel="stylesheet" src="~/js/layout.js" asp-append-version="true"></script>
+        @RenderBody() <!-- Здесь будет вставлено содержимое дочерних страниц -->
     </main>
     <footer>
         <p>&copy; 2024 Medicinal System</p>

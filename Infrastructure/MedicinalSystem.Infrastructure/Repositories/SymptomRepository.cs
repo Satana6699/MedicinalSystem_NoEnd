@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using MedicinalSystem.Domain.Entities;
 using MedicinalSystem.Application.Dtos;
+using MedicinalSystem.Application;
 using MedicinalSystem.Domain.Abstractions;
 using Azure.Core;
 using Bogus.DataSets;
 
-namespace MedicinalSystem.Infrastructure.Repositories;
+namespace MedicinalSystem.Infrastructure.Data.Repositories;
 
 public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
 {
@@ -47,12 +48,7 @@ public class SymptomRepository(AppDbContext dbContext) : ISymptomRepository
         }
         
         return symptoms.Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(symptom => new Symptom
-            {
-                Id = symptom.Id,
-                Name = symptom.Name
-            }); ;
+            .Take(pageSize);
     }
 }
 

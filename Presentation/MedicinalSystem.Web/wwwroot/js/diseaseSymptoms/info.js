@@ -1,7 +1,12 @@
 ﻿async function info(deleteButton) {
     const row = deleteButton.closest('tr');
-    const symptom = await axios.get("/api/diseaseSymptoms/" +  row.dataset.id);
-    const modal = document.getElementById("diseaseSymptomModal");
+    const symptom = await axios.get("/api/diseaseSymptoms/" + row.dataset.id, {
+        headers:
+        {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
+    const modal = document.getElementById("modal");
     const modalContent = modal.querySelector(".modal-info-content");
 
     modalContent.innerHTML = `
@@ -11,40 +16,9 @@
         <p><strong>Симптом:</strong> ${symptom.data.disease.symptoms}</p>
         <p><strong>Последствия:</strong> ${symptom.data.disease.consequences}</p>
         <p><strong>Симптом:</strong> ${symptom.data.symptom.name}</p>
-        <button onclick=\"closeDiseaseSymptomModal()\">Close</button>
+        <button onclick=\"closeModal()\">Close</button>
         <button onclick=\"deleteRow('${row.dataset.id}')\">Delete</button>
     `;
 
     modal.style.display = "block";
-}
-
-async function deleteRoe(id) {
-    try {
-        const response = await axios.delete(`${apiBaseUrl}/disease-symptoms/${id}`);
-        if (response.status === 204) {
-            const row = document.querySelector(`tr[data-id="${id}"]`);
-            if (row) row.remove(); // Удаляем строку из таблицы
-            alert("The disease-symptom association has been deleted successfully.");
-        } else {
-            alert("Failed to delete the association.");
-        }
-    } catch (error) {
-        console.error("Error deleting the association:", error);
-        if (error.response) {
-            // Ответ от сервера с ошибкой
-            alert(`Server error: ${error.response.status} - ${error.response.statusText}`);
-        } else {
-            // Ошибка запроса (например, нет соединения)
-            alert("Network error: Failed to delete the association.");
-        }
-    }
-
-    // Закрываем модальное окно после удаления
-    const modal = document.getElementById("diseaseSymptomModal");
-    modal.style.display = "none";
-}
-
-function closeDiseaseSymptomModal() {
-    const modal = document.getElementById("modal");
-    modal.style.display = "none";
 }

@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using MedicinalSystem.Infrastructure;
-using MedicinalSystem.Infrastructure.Repositories;
+using MedicinalSystem.Infrastructure.Data.Repositories;
 using MedicinalSystem.Domain.Abstractions;
+using MedicinalSystem.Infrastructure.Repositories;
+using MedicinalSystem.Infrastructure;
 
 namespace MedicinalSystem.Web.Extensions;
 
@@ -35,5 +36,6 @@ public static class ServiceExtensions
 		services.AddScoped<ISymptomRepository, SymptomRepository>();
 		services.AddScoped<IDiseaseSymptomRepository, DiseaseSymptomRepository>();
 		services.AddScoped<ITreatmentRepository, TreatmentRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 }

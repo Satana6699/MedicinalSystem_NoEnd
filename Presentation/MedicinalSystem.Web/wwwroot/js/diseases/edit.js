@@ -56,26 +56,3 @@ async function saveChanges(id, updatedData, row) {
         alert("Failed to save changes. Please try again.");
     }
 }
-
-function cancelEditing(row) {
-    const cells = row.querySelectorAll('td[contenteditable]');
-    const originalData = JSON.parse(row.dataset.originalData);
-
-    // Возвращаем исходные значения
-    cells.forEach((cell, index) => {
-        cell.innerText = originalData[index];
-        cell.setAttribute('contenteditable', 'false');
-    });
-
-    row.classList.remove('editing');
-
-    // Убираем кнопки сохранения и отмены
-    const editButton = row.querySelector('a[title="Save"]');
-    if (editButton) {
-        editButton.innerHTML = '<i class="bi bi-pencil-fill"></i>'; // Иконка редактирования
-        editButton.title = "Edit";
-    }
-
-    const cancelButton = row.querySelector('.cancel-button');
-    if (cancelButton) cancelButton.remove();
-}

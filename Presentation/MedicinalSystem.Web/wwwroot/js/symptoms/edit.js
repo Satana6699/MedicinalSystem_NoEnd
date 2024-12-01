@@ -26,7 +26,7 @@
         cancelButton.innerHTML = '<i class="bi bi-x-circle-fill"></i>'; // Иконка крестика
         cancelButton.title = "Cancel";
         cancelButton.className = "cancel-button";
-        cancelButton.onclick = () => cancelEditingSymptom(row);
+        cancelButton.onclick = () => cancelEditing(row);
         row.querySelector('td.actions').appendChild(cancelButton); // Кнопка отмены только в actions
     }
 }
@@ -57,27 +57,4 @@ async function saveChanges(id, updatedData, row) {
         console.error("Error saving changes:", error);
         alert("Failed to save changes. Please try again.");
     }
-}
-
-function cancelEditingSymptom(row) {
-    const cells = row.querySelectorAll('td[contenteditable]');
-    const originalData = JSON.parse(row.dataset.originalData);
-
-    // Возвращаем исходные значения
-    cells.forEach((cell, index) => {
-        cell.innerText = originalData[index];
-        cell.setAttribute('contenteditable', 'false');
-    });
-
-    row.classList.remove('editing');
-
-    // Убираем кнопки сохранения и отмены
-    const editButton = row.querySelector('a[title="Save"]');
-    if (editButton) {
-        editButton.innerHTML = '<i class="bi bi-pencil-fill"></i>'; // Иконка редактирования
-        editButton.title = "Edit";
-    }
-
-    const cancelButton = row.querySelector('.cancel-button');
-    if (cancelButton) cancelButton.remove();
 }

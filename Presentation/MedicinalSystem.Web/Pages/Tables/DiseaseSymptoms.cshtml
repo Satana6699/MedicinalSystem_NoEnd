@@ -6,10 +6,10 @@
 <link rel="stylesheet" href="~/css/modal_list.css" asp-append-version="true" />
 <div id="filter-container">
     <label for="filter-disease">Disease:</label>
-    <input type="text" id="filter-disease" oninput="applyDiseaseSymptomFilters()">
+    <input type="text" id="filter-disease" oninput="applyFilters()">
 
     <label for="filter-symptom">Symptom:</label>
-    <input type="text" id="filter-symptom" oninput="applyDiseaseSymptomFilters()">
+    <input type="text" id="filter-symptom" oninput="applyFilters()">
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 <script rel="stylesheet" src="~/js/diseaseSymptoms/get.js" asp-append-version="true"></script>

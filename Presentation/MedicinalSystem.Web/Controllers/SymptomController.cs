@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-﻿using MediatR;
-using MedicinalSystem.Application.Dtos;
-using MedicinalSystem.Application.Requests.Queries;
-using MedicinalSystem.Application.Requests.Commands;
+using MediatR;
+using MedicinalSystem.Application.Requests.Queries.Symptoms;
+using MedicinalSystem.Application.Requests.Commands.Symptoms;
 using Microsoft.AspNetCore.Authorization;
+using MedicinalSystem.Application.Dtos.Symptoms;
 
 namespace MedicinalSystem.Web.Controllers;
 
