@@ -35,7 +35,7 @@ async function loadData(page = 1) {
             <td data-field="disease" data-disease-id="${item.disease.id}">${item.disease.name}</td>
             <td data-field="symptom" data-symptom-id="${item.symptom.id}">${item.symptom.name}</td>
             <td class="actions">
-                <a href="javascript:void(0);" onclick="editRow(this)" title="Edit">
+                <a class="edit-buttons" href="javascript:void(0);" onclick="editRow(this)" title="Edit">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
                 <a href="javascript:void(0);" onclick="info(this)" title="Delete Item">

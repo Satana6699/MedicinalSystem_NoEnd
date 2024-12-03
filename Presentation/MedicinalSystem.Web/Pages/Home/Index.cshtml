@@ -3,7 +3,7 @@
     Layout = "~/Pages/Shared/Layout.cshtml"; // Указываем путь к макету
 }
 
-<h1 style="text-align: center; margin-bottom: 20px; color: #2ECC71;">Database Tables Overview</h1>
+<h1 style="text-align: center; margin-bottom: 20px; color: #2ECC71;">Medicinal System</h1>
 
 <div id="tables-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
     <!-- Данные будут загружены сюда через JS -->
@@ -18,11 +18,11 @@
         { name: "Производители", description: "Наши производители", link: "/Tables/Manufacturers" },
 
         { name: "Симптомы и болезни", description: "Информация о связи между болезнями и симптомами.", link: "/Tables/DiseaseSymptoms" },
-        { name: "Члены семьи", description: "Список членов семьи, проходивших лечение", link: "/Tables/FamilyMember" },
+        @*{ name: "Члены семьи", description: "Список членов семьи, проходивших лечение", link: "/Tables/FamilyMember" },
         { name: "Цены препоратов", description: "Цены на наши препораты", link: "/Tables/MedicinePrices" },
         { name: "Препораты", description: "Медицинские лекарства от болезней", link: "/Tables/Medicines" },
         { name: "Рецепты", description: "Рецепты, выданные нами", link: "/Tables/Prescriptions" },
-        { name: "Лечение", description: "Курсы нашего лечения", link: "/Tables/Treatments" },
+        { name: "Лечение", description: "Курсы нашего лечения", link: "/Tables/Treatments" },*@
     ];
 
     function renderTables() {

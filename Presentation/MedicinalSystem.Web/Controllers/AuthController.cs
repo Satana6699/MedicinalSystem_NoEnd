@@ -16,7 +16,6 @@ using Bogus.DataSets;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 [Route("api/auth")]
-[Authorize(Roles = "Admin")]
 [ApiController]
 public class AuthController : ControllerBase
 {

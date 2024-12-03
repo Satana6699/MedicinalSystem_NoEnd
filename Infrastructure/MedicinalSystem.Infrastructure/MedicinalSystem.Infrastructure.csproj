@@ -27,12 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="MedicinalSystem.Application">
-      <HintPath>..\..\Core\MedicinalSystem.Application\bin\Debug\net9.0\MedicinalSystem.Application.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Data\" />
   </ItemGroup>
 

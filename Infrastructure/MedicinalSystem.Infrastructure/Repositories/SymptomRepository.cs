@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using MedicinalSystem.Domain.Entities;
-using MedicinalSystem.Application.Dtos;
-using MedicinalSystem.Application;
 using MedicinalSystem.Domain.Abstractions;
 using Azure.Core;
 using Bogus.DataSets;
