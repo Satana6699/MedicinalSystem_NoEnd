@@ -22,7 +22,6 @@ public class DatabaseSeeder
         // Автоматически применяем миграции
         await _context.Database.MigrateAsync();
 
-
         // Генерация данных
         if (!_context.Users.Any())
         {
