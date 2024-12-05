@@ -3,7 +3,6 @@ using MedicinalSystem.Domain.Entities;
 using MedicinalSystem.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
-using MedicinalSystem.Application.Dtos.Users;
 using Microsoft.Win32;
 using Gender = MedicinalSystem.Domain.Entities.Gender;
 using static Bogus.DataSets.Name;

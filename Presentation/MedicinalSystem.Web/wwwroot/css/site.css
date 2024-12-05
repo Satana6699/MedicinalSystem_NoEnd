@@ -1,41 +1,39 @@
+
 /* Общий стиль для страницы */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #1e1e1e; /* Темный фон */
+    color: #eaeaea; /* Светлый текст */
 }
 
 /* Стили для шапки */
 header {
-    background-color: #333;
+    background-color: #222; /* Темный фон шапки */
     color: white;
-    padding: 10px 0;
-    font-size: 0.8em; 
+    padding: 15px 0;
+    font-size: 0.9em; /* Увеличим размер шрифта для шапки */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Легкая тень для шапки */
 }
 
+/* Меню */
 .navbar {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-/* Уменьшение размера текста и отступов в меню */
-.navbar .menu li a {
-    font-size: 12px; /* Уменьшение размера шрифта */
-    padding: 2px 5px; /* Уменьшение внутренних отступов */
-    margin: 2px; /* Уменьшение внешних отступов */
-}
 
-/* Если нужно уменьшить высоту строк */
-.navbar .menu li {
-    line-height: 2; /* Уменьшение высоты строки */
-}
-
+/* Градиент для меню */
 .menu {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 20px;
+    gap: 30px;
+    background: linear-gradient(45deg, #58a6ff, #2e7d32); /* Градиент */
+    border-radius: 8px;
+    padding: 5px;
 }
 
     .menu li {
@@ -46,49 +44,72 @@ header {
         text-decoration: none;
         color: white;
         font-weight: bold;
-        padding: 10px 20px;
+        padding: 12px 25px;
         transition: background-color 0.3s, color 0.3s;
+        border-radius: 5px;
     }
 
         .menu a:hover {
-            background-color: #555;
+            background-color: #444; /* Темный фон при наведении */
             color: #fff;
-            border-radius: 5px;
         }
+
+/* Если нужно уменьшить высоту строк */
+.navbar .menu li {
+    line-height: 1.5;
+}
 
 /* Стили для футера */
 footer {
     text-align: center;
-    padding: 10px;
-    background-color: #f1f1f1;
-    margin-top: 20px;
-}
-a {
-    text-decoration: none;
+    padding: 20px;
+    background-color: #333; /* Темный фон футера */
+    margin-top: 30px;
+    color: #eaeaea;
+    font-size: 0.8em;
 }
 
+/* Ссылки без подчеркивания */
+a {
+    text-decoration: none;
+    color: inherit; /* Цвет ссылки будет соответствовать цвету текста */
+}
+
+/* Выпадающее меню */
 .dropdown-container {
     position: absolute;
     z-index: 100;
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: #333;
+    border: 1px solid #444;
     width: 200px;
     max-height: 150px;
     overflow-y: auto;
     display: none;
+    border-radius: 8px;
 }
 
 .dropdown-item {
     padding: 8px;
     cursor: pointer;
+    color: #eaeaea;
 }
 
     .dropdown-item:hover {
-        background-color: #f0f0f0;
+        background-color: #555;
     }
 
+/* Стиль для поля поиска */
 .search-input {
     width: 100%;
-    padding: 5px;
-    margin-bottom: 5px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #444;
+    border: 1px solid #555;
+    color: #eaeaea;
 }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #58a6ff; /* Подсветка при фокусе */
+    }

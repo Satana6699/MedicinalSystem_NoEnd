@@ -1,28 +1,55 @@
-﻿.modal-list {
-    position: absolute;  /*Позиционирование относительно ячейки */
+﻿/* Стили для модального списка */
+.modal-list {
+    position: absolute; /* Позиционирование относительно ячейки */
     z-index: 1000;
-    width: 300px;  /*Ограничиваем ширину */
-    max-height: 300px;  /*Ограничиваем высоту окна */
-    background-color: white;  /*Белый фон */
-    border: 2px solid #888;  /*Граница окна */
-    border-radius: 10px;  /*Скругленные углы */
-    overflow-y: scroll;
+    width: 300px; /* Ограничиваем ширину */
+    max-height: 300px; /* Ограничиваем высоту окна */
+    background-color: #333; /* Темный фон */
+    border: 2px solid #444; /* Более темная граница */
+    border-radius: 10px; /* Скругленные углы */
+    overflow-y: scroll; /* Вертикальный скролл */
+    color: #eaeaea; /* Светлый текст */
 }
 
+/* Содержимое модального окна */
 .modal-list-content {
     height: 100%; /* Заполняет все доступное пространство */
     overflow-y: auto; /* Добавляем вертикальный скролл, если содержимое выходит за пределы */
     padding: 10px;
 }
 
+/* Шапка модального окна */
 .modal-list-header {
-    /* Стили для шапки модального окна, если необходимо */
-    background-color: #f1f1f1;
-    padding: 5px;
+    background-color: #444; /* Темный фон для шапки */
+    padding: 10px;
     font-weight: bold;
+    color: #eaeaea; /* Светлый текст */
+    border-bottom: 2px solid #555; /* Темная граница снизу */
 }
 
+/* Основное содержимое модального окна */
 .modal-list-body {
-    /* Основной контейнер для содержимого */
     padding-top: 10px;
+    background-color: #222; /* Темный фон для тела */
 }
+
+/* Элементы списка в модальном окне */
+.modal-list ul {
+    list-style-type: none; /* Убираем маркеры */
+    padding: 0;
+    margin: 0;
+}
+
+.modal-list li {
+    padding: 10px;
+    background-color: #333; /* Темный фон для элементов */
+    border-radius: 5px;
+    margin-bottom: 5px; /* Расстояние между элементами */
+    transition: background-color 0.3s ease;
+    color: #eaeaea; /* Светлый текст */
+}
+
+    .modal-list li:hover {
+        background-color: #444; /* Подсветка при наведении */
+        cursor: pointer;
+    }

@@ -14,13 +14,14 @@
 /* Содержимое модального окна */
 .modal-info-content {
     position: relative;
-    background-color: #ffffff;
+    background-color: #222; /* Темный фон окна */
     margin: 10% auto; /* Центровка окна */
     padding: 20px;
     border-radius: 8px;
     width: 80%; /* Ширина окна */
     max-width: 500px; /* Максимальная ширина */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень вокруг окна */
+    color: #eaeaea; /* Светлый текст */
     animation: modalFadeIn 0.3s ease-in-out; /* Анимация появления */
 }
 
@@ -37,7 +38,7 @@
     }
 
         .modal-info-content .close:hover {
-            color: #000;
+            color: #58a6ff; /* Подсветка кнопки при наведении */
         }
 
 /* Анимация появления окна */

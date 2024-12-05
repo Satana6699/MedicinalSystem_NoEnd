@@ -1,53 +1,100 @@
-﻿.auth-container {
-    background: #ffffff;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    width: 100%;
-    max-width: 400px;
-    justify-content: center;
-    align-items: center;
+﻿/* Общие стили для main */
+main {
+    display: flex;
+    justify-content: center; /* Центрирует по горизонтали */
+    align-items: center; /* Центрирует по вертикали */
+    height: 100vh; /* Задает высоту на всю видимую высоту экрана */
+    margin: 0;
+    padding: 0;
 }
 
-    .auth-container h1 {
-        text-align: center;
-        color: #333;
+/* Общие стили для страницы (темная тема) */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212; /* Темный фон */
+    color: #e0e0e0; /* Светлый цвет текста */
+    margin: 0;
+    padding: 0;
+}
+
+/* Общий контейнер для формы (для авторизации и регистрации) */
+.auth-container, .register-container {
+    background-color: #333; /* Темный фон для контейнера */
+    border-radius: 8px; /* Скругленные углы */
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Тень для эффекта */
+    width: 100%;
+    max-width: 400px; /* Ограничение максимальной ширины */
+    margin: 0 auto; /* Центрируем контейнер */
+    text-align: center;
+}
+
+    /* Заголовок формы */
+    .auth-container h1, .register-container h1 {
+        color: #fff; /* Белый цвет для заголовка */
+        font-size: 24px;
+        margin-bottom: 20px;
     }
 
-    .auth-container form {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .auth-container label {
-        margin: 10px 0 5px;
-        color: #555;
-    }
-
-    .auth-container input {
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ccc;
+    /* Стили для полей ввода */
+    .auth-container input, .register-container input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #444; /* Темная граница */
         border-radius: 4px;
+        font-size: 16px;
+        background-color: #444; /* Темный фон для полей */
+        color: #fff; /* Белый цвет текста */
     }
 
-    .auth-container button {
-        margin-top: 20px;
-        padding: 10px;
-        font-size: 16px;
-        color: #fff;
-        background-color: #28a745;
+        /* Цвет границы для полей при фокусе */
+        .auth-container input:focus, .register-container input:focus {
+            border-color: #58a6ff; /* Синяя граница при фокусе */
+            outline: none;
+        }
+
+    /* Кнопка отправки */
+    .auth-container button, .register-container button {
+        width: 100%;
+        padding: 12px;
+        background-color: #28a745; /* Зеленый цвет */
+        color: white;
         border: none;
         border-radius: 4px;
+        font-size: 16px;
         cursor: pointer;
         transition: background-color 0.3s;
     }
 
-        .auth-container button:hover {
-            background-color: #218838;
+        /* Изменение цвета кнопки при наведении */
+        .auth-container button:hover, .register-container button:hover {
+            background-color: #218838; /* Темнее при наведении */
         }
 
-.error {
-    color: red;
+    /* Кнопка для перехода на регистрацию и возврата */
+    .register-container .back-button, #registerBtn {
+        width: 100%;
+        padding: 12px;
+        background-color: #ff4d4d; /* Красный цвет */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+    }
+
+        /* Изменение цвета кнопки при наведении */
+        .register-container .back-button:hover, #registerBtn:hover {
+            background-color: #e04343; /* Темнее при наведении */
+        }
+
+/* Сообщение об ошибке */
+#errorMsg, #registerErrorMsg {
+    color: #f44336; /* Красный цвет для ошибок */
+    font-size: 14px;
+    text-align: center;
     margin-top: 10px;
 }

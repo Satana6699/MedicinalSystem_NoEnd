@@ -1,6 +1,6 @@
 ﻿const token = localStorage.getItem('token');
 
-if (token !== null) {
+if (token !== null && !isTokenExpired(token)) {
     // Показываем кнопку выхода
     displayLogoutButton();
 } else {
@@ -43,17 +43,15 @@ function displayAuthForm() {
             }
 
             const data = await response.data;
-            // Store token in localStorage
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.role);
+            localStorage.setItem('userName', data.userName);
+            localStorage.setItem('fullName', data.fullName);
 
             const accountLink = document.querySelector('a[href="/Home/Auth"]');
 
-            // Проверяем, что ссылка найдена
             if (accountLink) {
-                // Меняем текст содержимого
                 accountLink.textContent = data.userName;
-                localStorage.setItem('accountLinkText', data.userName);
             }
 
             displayLogoutButton();
@@ -74,31 +72,61 @@ function displayAuthForm() {
 
 function displayLogoutButton() {
     const authContainer = document.querySelector('.auth-container');
-
-    // Clear the current form
     authContainer.innerHTML = '';
+    const userNameHeader = document.createElement('h2');
+    userNameHeader.textContent = `Добро пожаловать, ${localStorage.getItem('userName') || 'Гость'}`; 
 
-    // Create Logout button
+    const infoContainer = document.createElement('div');
+    const fullName = document.createElement('p');
+    fullName.textContent = `Полное имя: ${localStorage.getItem('fullName') || 'Не указано'}`;
+
+    const role = document.createElement('p');
+    role.textContent = `Роль: ${localStorage.getItem('role') || 'Не указана'}`;
+
+    infoContainer.appendChild(fullName);
+    infoContainer.appendChild(role);
+
+    authContainer.appendChild(userNameHeader);
+    authContainer.appendChild(infoContainer);
+
     const logoutButton = document.createElement('button');
-    logoutButton.textContent = 'Logout';
-    logoutButton.style.backgroundColor = 'red';
-    logoutButton.style.color = 'white';
-    logoutButton.style.padding = '10px';
-    logoutButton.style.border = 'none';
-    logoutButton.style.borderRadius = '4px';
-    logoutButton.style.cursor = 'pointer';
-    logoutButton.style.fontSize = '16px';
+    logoutButton.textContent = 'Выйти';
 
-    // Add Logout functionality
     logoutButton.addEventListener('click', () => {
-        // Remove token from localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('role');
-        localStorage.removeItem('accountLinkText');
-        // Redirect to login page
+        localStorage.removeItem('fullName');
+        localStorage.removeItem('userName');
+
         window.location.href = '/Home/Index';
     });
 
-    // Append Logout button to the container
     authContainer.appendChild(logoutButton);
+}
+
+
+// Функции для проверки жизни токена
+function base64UrlDecode(base64Url) {
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const decoded = atob(base64);
+    return JSON.parse(decoded);
+}
+
+function isTokenExpired(token) {
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+        console.error('Неверный формат токена');
+        return true;
+    }
+
+    const payload = base64UrlDecode(tokenParts[1]);
+    const currentTime = Math.floor(Date.now() / 1000);
+
+    if (payload.exp < currentTime) {
+        console.log("Токен истек.");
+        return true;
+    } else {
+        console.log("Токен еще действителен.");
+        return false;
+    }
 }
