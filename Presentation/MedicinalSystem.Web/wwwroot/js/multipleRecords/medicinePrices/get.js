@@ -59,10 +59,7 @@ function ISODateInBaseDate(ISO) {
 }
 function validateInput(cell) {
     const value = cell.textContent;
-
-    // Проверяем, чтобы значение было числом
     if (!/^\d*\.?\d*$/.test(value)) {
-        // Если нет, удаляем последние символы
         cell.textContent = value.replace(/[^0-9.]/g, '');
     }
 }

@@ -2,19 +2,17 @@
     const row = editButton.closest('tr');
     const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions'));
     const isEditing = row.classList.contains('editing');
-    const dateStr = cells[1].getAttribute('date-str').split('.')[0];
-
 
     if (isEditing) {
-        // Сохранение изменений
         const id = row.dataset.id;
-        const newdate = new Date(dateStr);
-        newdate.setHours(newdate.getHours() + 3);
         const updatedData = {
             id: id,
-            name: cells[0].innerText.trim(),
-            dateOfBirth: newdate,
-            genderId: cells[2].dataset.genderId,
+            diseaseId: cells[0].dataset.diseaseId,
+            medicineId: cells[1].dataset.medicineId,
+            dosage: cells[2].innerText.trim(),
+            durationDays: cells[3].innerText.trim(),
+            intervalHours: cells[4].innerText.trim(),
+            instructions: cells[5].innerText.trim()
         };
 
         saveChanges(id, updatedData, row);
@@ -24,19 +22,11 @@
         row.dataset.originalData = JSON.stringify(cells.map(cell => cell.innerText.trim()));
 
         cells.forEach(cell => {
-            if (cell.dataset.field === "gender") {
+            if (cell.dataset.field === "disease" || cell.dataset.field === "medicine") {
                 cell.addEventListener('click', () => openSelectModal(cell));
             }
         });
-        cells[1].innerHTML = `<input type="datetime-local" id="datetime" name="datetime" value="${dateStr}"/>`;
         cells.forEach(cell => cell.setAttribute('contenteditable', 'true')); // Только данные можно редактировать
-        const datetimeInput = document.querySelector('#datetime');
-        datetimeInput.addEventListener('change', (event) => {
-            const newdate = new Date(event.target.value);
-            newdate.setHours(newdate.getHours() + 3);
-            cells[1].setAttribute('date-str', new Date(newdate).toISOString());
-        });
-
 
         editButton.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
         editButton.title = "Save";
@@ -46,7 +36,7 @@
         cancelButton.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
         cancelButton.title = "Cancel";
         cancelButton.className = "cancel-button";
-        cancelButton.onclick = () => cancelEditingItem(row);
+        cancelButton.onclick = () => cancelEditingDiseasemedicine(row);
         row.querySelector('td.actions').appendChild(cancelButton);
     }
 }
@@ -67,7 +57,7 @@ async function saveChanges(id, updatedData, row) {
         // Отключаем возможность редактирования (клик по ячейкам)
         cells.forEach(cell => {
             cell.removeEventListener('click', openSelectModal);  // Убираем обработчик события
-            cell.classList.remove('editable');
+            cell.classList.remove('editable');  // Можно добавить стиль, если нужно
         });
 
         // Отключаем кнопки редактирования
@@ -83,7 +73,7 @@ async function saveChanges(id, updatedData, row) {
         alert("Failed to save changes. Please try again.");
     }
 }
-function cancelEditingItem(row) {
+function cancelEditingDiseasemedicine(row) {
     // удалить модальные окна если есть
     const existingModal = document.querySelector('.modal-list');
     if (existingModal) {
@@ -113,10 +103,9 @@ function cancelEditingItem(row) {
     cells.forEach(cell => {
         cell.removeEventListener('click', openSelectModal);  // Убираем обработчик события
     });
-    cancelEditing(row);
 }
 function openSelectModal(cell) {
-    const type = 'gender';
+    const type = cell.dataset.field === "disease" ? 'disease' : 'medicine';
 
     // Удаляем все открытые модальные окна, если они есть
     const existingModal = document.querySelector('.modal-list');
@@ -152,7 +141,6 @@ function openSelectModal(cell) {
     loadSelectData(type, cell);
 }
 
-
 async function loadSelectData(type, cell) {
     try {
         const response = await axios.get(`${apiBaseUrl}/${type}s`, {
@@ -178,15 +166,14 @@ async function loadSelectData(type, cell) {
     }
 }
 function selectItem(item, cell, type) {
-    if (type === 'gender') {
-        cell.dataset.genderId = item.id;
+    if (type === 'disease') {
+        cell.dataset.diseaseId = item.id;
+        cell.innerText = item.name;
+    } else if (type === 'medicine') {
+        cell.dataset.medicineId = item.id;
         cell.innerText = item.name;
     }
 
     const modal = document.querySelector('.modal-list');
     if (modal) modal.remove();
-}
-
-function handleDateChange(event) {
-    cell.setAttribute('date-str', Date(event.target.value).toISOString());
 }

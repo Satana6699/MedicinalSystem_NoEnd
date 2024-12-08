@@ -4,6 +4,9 @@ using MedicinalSystem.Application.Requests.Queries.Treatments;
 using MedicinalSystem.Application.Requests.Commands.Treatments;
 using Microsoft.AspNetCore.Authorization;
 using MedicinalSystem.Application.Dtos.Treatments;
+using MedicinalSystem.Application.Requests.Queries.Diseases;
+using MedicinalSystem.Application.Requests.Queries.FamilyMembers;
+using MedicinalSystem.Application.Requests.Queries.Medicines;
 
 namespace MedicinalSystem.Web.Controllers.MultipleRecords;
 
@@ -82,5 +85,21 @@ public class TreatmentController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("medicines")]
+    public async Task<IActionResult> GetSymptoms([FromQuery] string? name = null)
+    {
+        var result = await _mediator.Send(new GetMedicinesAllQuery(name));
+
+        return Ok(result);
+    }
+
+    [HttpGet("diseases")]
+    public async Task<IActionResult> GetDiseases([FromQuery] string? name = null)
+    {
+        var result = await _mediator.Send(new GetDiseasesAllQuery(name));
+
+        return Ok(result);
     }
 }

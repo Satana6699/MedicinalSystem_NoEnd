@@ -2,19 +2,19 @@
     const row = editButton.closest('tr');
     const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions'));
     const isEditing = row.classList.contains('editing');
-    const dateStr = cells[1].getAttribute('date-str').split('.')[0];
-
 
     if (isEditing) {
         // Сохранение изменений
         const id = row.dataset.id;
-        const newdate = new Date(dateStr);
-        newdate.setHours(newdate.getHours() + 3);
+        const dateStr = cells[2].getAttribute('date-str');
+        let newDate = new Date(dateStr);
+        newDate.setHours(newDate.getHours() + 3);
         const updatedData = {
             id: id,
-            name: cells[0].innerText.trim(),
-            dateOfBirth: newdate,
-            genderId: cells[2].dataset.genderId,
+            familyMemberId: cells[0].dataset.familyMemberId,
+            diseaseId: cells[1].dataset.diseaseId,
+            date: newDate,
+            status: cells[3].dataset.status === "true"
         };
 
         saveChanges(id, updatedData, row);
@@ -24,19 +24,14 @@
         row.dataset.originalData = JSON.stringify(cells.map(cell => cell.innerText.trim()));
 
         cells.forEach(cell => {
-            if (cell.dataset.field === "gender") {
+            if (cell.dataset.field === "disease" || cell.dataset.field === "familyMember") {
                 cell.addEventListener('click', () => openSelectModal(cell));
             }
+            if (cell.dataset.field === "status") {
+                // Добавляем обработчик для ячейки статуса
+                cell.addEventListener('click', () => toggleStatus(cell));
+            }
         });
-        cells[1].innerHTML = `<input type="datetime-local" id="datetime" name="datetime" value="${dateStr}"/>`;
-        cells.forEach(cell => cell.setAttribute('contenteditable', 'true')); // Только данные можно редактировать
-        const datetimeInput = document.querySelector('#datetime');
-        datetimeInput.addEventListener('change', (event) => {
-            const newdate = new Date(event.target.value);
-            newdate.setHours(newdate.getHours() + 3);
-            cells[1].setAttribute('date-str', new Date(newdate).toISOString());
-        });
-
 
         editButton.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
         editButton.title = "Save";
@@ -46,7 +41,7 @@
         cancelButton.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
         cancelButton.title = "Cancel";
         cancelButton.className = "cancel-button";
-        cancelButton.onclick = () => cancelEditingItem(row);
+        cancelButton.onclick = () => cancelEditingDiseasefamilyMember(row);
         row.querySelector('td.actions').appendChild(cancelButton);
     }
 }
@@ -64,9 +59,8 @@ async function saveChanges(id, updatedData, row) {
 
         location.reload();
 
-        // Отключаем возможность редактирования (клик по ячейкам)
         cells.forEach(cell => {
-            cell.removeEventListener('click', openSelectModal);  // Убираем обработчик события
+            cell.removeEventListener('click', openSelectModal);
             cell.classList.remove('editable');
         });
 
@@ -83,8 +77,7 @@ async function saveChanges(id, updatedData, row) {
         alert("Failed to save changes. Please try again.");
     }
 }
-function cancelEditingItem(row) {
-    // удалить модальные окна если есть
+function cancelEditingDiseasefamilyMember(row) {
     const existingModal = document.querySelector('.modal-list');
     if (existingModal) {
         existingModal.remove();
@@ -92,8 +85,6 @@ function cancelEditingItem(row) {
 
     const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions'));
     const originalData = JSON.parse(row.dataset.originalData);
-
-    // Возвращаем исходные значения
     cells.forEach((cell, index) => {
         cell.innerText = originalData[index];
     });
@@ -109,22 +100,16 @@ function cancelEditingItem(row) {
     const cancelButton = row.querySelector('.cancel-button');
     if (cancelButton) cancelButton.remove();
 
-    // Отключаем обработчики кликов, если редактирование отменено
     cells.forEach(cell => {
-        cell.removeEventListener('click', openSelectModal);  // Убираем обработчик события
+        cell.removeEventListener('click', openSelectModal);
     });
-    cancelEditing(row);
 }
 function openSelectModal(cell) {
-    const type = 'gender';
-
-    // Удаляем все открытые модальные окна, если они есть
+    const type = cell.dataset.field === "disease" ? 'disease' : 'familyMember';
     const existingModal = document.querySelector('.modal-list');
     if (existingModal) {
         existingModal.remove();
     }
-
-    // Создаем новое модальное окно
     const modal = document.createElement('div');
     modal.classList.add('modal-list');
     modal.innerHTML = `
@@ -144,14 +129,12 @@ function openSelectModal(cell) {
 
     modal.querySelector('.close').onclick = () => modal.remove();
 
-    // Позиционируем модальное окно под ячейкой
     const cellRect = cell.getBoundingClientRect();
     modal.style.left = `${cellRect.left}px`;
-    modal.style.top = `${cellRect.bottom + window.scrollY}px`; // Учитываем прокрутку страницы
+    modal.style.top = `${cellRect.bottom + window.scrollY}px`; 
 
     loadSelectData(type, cell);
 }
-
 
 async function loadSelectData(type, cell) {
     try {
@@ -178,8 +161,11 @@ async function loadSelectData(type, cell) {
     }
 }
 function selectItem(item, cell, type) {
-    if (type === 'gender') {
-        cell.dataset.genderId = item.id;
+    if (type === 'disease') {
+        cell.dataset.diseaseId = item.id;
+        cell.innerText = item.name;
+    } else if (type === 'familyMember') {
+        cell.dataset.familyMemberId = item.id;
         cell.innerText = item.name;
     }
 
@@ -187,6 +173,9 @@ function selectItem(item, cell, type) {
     if (modal) modal.remove();
 }
 
-function handleDateChange(event) {
-    cell.setAttribute('date-str', Date(event.target.value).toISOString());
+function toggleStatus(cell) {
+    const currentStatus = cell.dataset.status === "true";
+    const newStatus = !currentStatus;
+    cell.dataset.status = newStatus.toString();
+    cell.innerText = newStatus ? "Рецепт использован" : "Рецепт не использован";
 }

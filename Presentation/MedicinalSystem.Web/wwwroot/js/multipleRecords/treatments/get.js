@@ -34,11 +34,11 @@ async function loadData(page = 1) {
         `;
         const tableBody = response.data.items.map(item => `
             <tr data-id="${item.id}">
-                <td contenteditable="false">${item.disease.name}</td>
-                <td contenteditable="false">${item.medicine.name}</td>
+                <td data-field="disease" data-disease-id="${item.disease.id}">${item.disease.name}</td>
+                <td data-field="medicine" data-medicine-id="${item.medicine.id}">${item.medicine.name}</td>
                 <td contenteditable="false">${item.dosage}</td>
-                <td contenteditable="false">${item.durationDays}</td>
-                <td contenteditable="false">${item.intervalHours}</td>
+                <td contenteditable="false" oninput="validateInput(this)">${item.durationDays}</td>
+                <td contenteditable="false" oninput="validateInput(this)">${item.intervalHours}</td>
                 <td contenteditable="false">${item.instructions}</td>
                 <td class="actions">
                     <a class="edit-buttons" href="javascript:void(0);" onclick="editRow(this)" title="Edit">
@@ -58,5 +58,11 @@ async function loadData(page = 1) {
     }
 }
 
-// Инициализация
+function validateInput(cell) {
+    const value = cell.textContent;
+    if (!/^\d*\.?\d*$/.test(value)) {
+        cell.textContent = value.replace(/[^0-9.]/g, '');
+    }
+}
+
 loadData();
