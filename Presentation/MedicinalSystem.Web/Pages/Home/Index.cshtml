@@ -18,10 +18,10 @@
         { name: "Производители", description: "Наши производители", link: "/Tables/SingleRecords/Manufacturers" },
 
         { name: "Симптомы и болезни", description: "Информация о связи между болезнями и симптомами.", link: "/Tables/MultipleRecords/DiseaseSymptoms" },
-      @*{ name: "Члены семьи", description: "Список членов семьи, проходивших лечение", link: "/Tables/MultipleRecords/FamilyMember" },
+        { name: "Члены семьи", description: "Список членов семьи, проходивших лечение", link: "/Tables/MultipleRecords/FamilyMember" },
         { name: "Цены препоратов", description: "Цены на наши препораты", link: "/Tables/MultipleRecords/MedicinePrices" },
         { name: "Препораты", description: "Медицинские лекарства от болезней", link: "/Tables/MultipleRecords/Medicines" },
-        { name: "Рецепты", description: "Рецепты, выданные нами", link: "/Tables/MultipleRecords/Prescriptions" },
+    @*{ name: "Рецепты", description: "Рецепты, выданные нами", link: "/Tables/MultipleRecords/Prescriptions" },
         { name: "Лечение", description: "Курсы нашего лечения", link: "/Tables/MultipleRecords/Treatments" },*@
     ];
 
@@ -33,15 +33,15 @@
             // Выбор цвета на основе индекса
             const colors = [
                 { background: "#3498DB", border: "#2980B9" }, // Синий
+                { background: "#2ECC71", border: "#27AE60" }, // Зелёный
+                { background: "#F1C40F", border: "#F39C12" }, // Жёлтый
                 { background: "#3498DB", border: "#2980B9" }, // Синий
+                { background: "#2ECC71", border: "#27AE60" }, // Зелёный
+                { background: "#F1C40F", border: "#F39C12" }, // Жёлтый
                 { background: "#3498DB", border: "#2980B9" }, // Синий
+                { background: "#2ECC71", border: "#27AE60" }, // Зелёный
+                { background: "#F1C40F", border: "#F39C12" }, // Жёлтый
                 { background: "#3498DB", border: "#2980B9" }, // Синий
-                { background: "#2ECC71", border: "#27AE60" }, // Зелёный
-                { background: "#2ECC71", border: "#27AE60" }, // Зелёный
-                { background: "#2ECC71", border: "#27AE60" }, // Зелёный
-                { background: "#2ECC71", border: "#27AE60" }, // Зелёный
-                { background: "#F1C40F", border: "#F39C12" },  // Жёлтый
-                { background: "#F1C40F", border: "#F39C12" },  // Жёлтый
             ];
             const color = colors[index % colors.length];
 

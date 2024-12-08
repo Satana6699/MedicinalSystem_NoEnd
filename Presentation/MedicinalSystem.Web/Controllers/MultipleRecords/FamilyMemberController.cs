@@ -4,6 +4,7 @@ using MedicinalSystem.Application.Requests.Queries.FamilyMembers;
 using MedicinalSystem.Application.Requests.Commands.FamilyMembers;
 using Microsoft.AspNetCore.Authorization;
 using MedicinalSystem.Application.Dtos.FamilyMembers;
+using MedicinalSystem.Application.Requests.Queries.Genders;
 
 namespace MedicinalSystem.Web.Controllers.MultipleRecords;
 
@@ -82,5 +83,13 @@ public class FamilyMemberController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("genders")]
+    public async Task<IActionResult> GetGenders([FromQuery] string? name = null)
+    {
+        var result = await _mediator.Send(new GetGendersAllQuery(name));
+
+        return Ok(result);
     }
 }

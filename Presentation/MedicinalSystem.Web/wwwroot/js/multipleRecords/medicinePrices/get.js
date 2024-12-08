@@ -25,15 +25,15 @@ async function loadData(page = 1) {
             <tr>
                 <th>Препорат</th>
                 <th>Стоимость р.</th>
-                <th>Дата установки цены</th>
+                <th>Время установки цены</th>
                 <th>Действия</th>
             </tr>
         `;
         const tableBody = response.data.items.map(item => `
             <tr data-id="${item.id}">
-                <td contenteditable="false">${item.medicine.name}</td>
-                <td contenteditable="false">${item.price}</td>
-                <td contenteditable="false">${item.date}</td>
+                <td data-medicine-id="${item.medicine.id}">${item.medicine.name}</td>
+                <td contenteditable="false" oninput="validateInput(this)">${item.price}</td>
+                <td>${ISODateInBaseDate(item.date)}</td>
                 <td class="actions">
                     <a class="edit-buttons" href="javascript:void(0);" onclick="editRow(this)" title="Edit">
                         <i class="bi bi-pencil-fill"></i>
@@ -49,6 +49,21 @@ async function loadData(page = 1) {
         createTable(itemsLength, totalCount, page, tableTitle, tableHead, tableBody);
     } catch (error) {
         ERROR(error);
+    }
+}
+function ISODateInBaseDate(ISO) {
+    const date = new Date(ISO);
+    return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+    // на всякий случай
+    return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+}
+function validateInput(cell) {
+    const value = cell.textContent;
+
+    // Проверяем, чтобы значение было числом
+    if (!/^\d*\.?\d*$/.test(value)) {
+        // Если нет, удаляем последние символы
+        cell.textContent = value.replace(/[^0-9.]/g, '');
     }
 }
 

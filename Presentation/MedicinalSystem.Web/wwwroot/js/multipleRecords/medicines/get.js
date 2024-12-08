@@ -37,7 +37,7 @@ async function loadData(page = 1) {
                 <td contenteditable="false">${item.name}</td>
                 <td contenteditable="false">${item.indications}</td>
                 <td contenteditable="false">${item.contraindications}</td>
-                <td contenteditable="false">${item.manufacturer.name}</td>
+                <td data-field="manufacturer" data-manufacturer-id="${item.manufacturer.id}">${item.manufacturer.name}</td>
                 <td contenteditable="false">${item.packaging}</td>
                 <td contenteditable="false">${item.dosage}</td>
                 <td class="actions">

@@ -20,9 +20,9 @@ public class GetDiseasesQueryHandler : IRequestHandler<GetDiseasesQuery, PagedRe
     public async Task<PagedResult<DiseaseDto>> Handle(GetDiseasesQuery request, CancellationToken cancellationToken)
     {
         var totalItems = await _repository.CountAsync(request.Name);
-        var symptoms = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
+        var diseaeses = await _repository.GetPageAsync(request.Page, request.PageSize, request.Name);
 
-        var items = _mapper.Map<IEnumerable<DiseaseDto>>(symptoms);
+        var items = _mapper.Map<IEnumerable<DiseaseDto>>(diseaeses);
         return new PagedResult<DiseaseDto>(items, totalItems, request.Page, request.PageSize);
     }
 }

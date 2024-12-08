@@ -17,14 +17,14 @@ namespace MedicinalSystem.Infrastructure.Repositories.SingleRecords
 
         public async Task Create(User entity) => await _dbContext.Users.AddAsync(entity);
 
-        public async Task<IEnumerable<User>> Get(bool trackChanges, string? userName)
+        public async Task<IEnumerable<User>> Get(bool trackChanges, string? name)
         {
             var users = await (!trackChanges
                 ? _dbContext.Users.OrderBy(d => d.Id).AsNoTracking()
                 : _dbContext.Users.OrderBy(d => d.Id)).ToListAsync();
-            if (!string.IsNullOrWhiteSpace(userName))
+            if (!string.IsNullOrWhiteSpace(name))
             {
-                users = users.Where(s => s.UserName.Contains(userName, StringComparison.OrdinalIgnoreCase)).ToList();
+                users = users.Where(s => s.UserName.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             return users;

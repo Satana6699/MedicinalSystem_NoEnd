@@ -3,27 +3,34 @@
     const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions'));
     const isEditing = row.classList.contains('editing');
 
+
     if (isEditing) {
         // Сохранение изменений
         const id = row.dataset.id;
         const updatedData = {
             id: id,
-            diseaseId: cells[0].dataset.diseaseId, // Это ID болезни
-            symptomId: cells[1].dataset.symptomId // Это ID симптома
+            name: cells[0].innerText.trim(),
+            indications: cells[1].innerText.trim(),
+            contraindications: cells[2].innerText.trim(),
+            manufacturerId: cells[3].dataset.manufacturerId,
+            packaging: cells[4].innerText.trim(),
+            dosage: cells[5].innerText.trim(),
         };
 
         saveChanges(id, updatedData, row);
     } else {
         // Начало редактирования
+        cells = row.querySelectorAll('td[contenteditable]');
         row.classList.add('editing');
         row.dataset.originalData = JSON.stringify(cells.map(cell => cell.innerText.trim()));
 
         cells.forEach(cell => {
-            if (cell.dataset.field === "disease" || cell.dataset.field === "symptom") {
+            if (cell.dataset.field === "manufacturer") {
                 cell.addEventListener('click', () => openSelectModal(cell));
             }
         });
-
+        cells.forEach(cell => cell.setAttribute('contenteditable', 'true')); // Только данные можно редактировать
+        
         editButton.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
         editButton.title = "Save";
 
@@ -32,7 +39,7 @@
         cancelButton.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
         cancelButton.title = "Cancel";
         cancelButton.className = "cancel-button";
-        cancelButton.onclick = () => cancelEditingDiseaseSymptom(row);
+        cancelButton.onclick = () => cancelEditingItem(row);
         row.querySelector('td.actions').appendChild(cancelButton);
     }
 }
@@ -48,13 +55,12 @@ async function saveChanges(id, updatedData, row) {
         row.classList.remove('editing');
         const cells = Array.from(row.querySelectorAll('td')).filter(cell => !cell.classList.contains('actions'));
 
-        // Обновляем данные в строке
-        cells[0].innerText = response.data.disease.name;
-        cells[1].innerText = response.data.symptom.name;
+        location.reload();
+
         // Отключаем возможность редактирования (клик по ячейкам)
         cells.forEach(cell => {
             cell.removeEventListener('click', openSelectModal);  // Убираем обработчик события
-            cell.classList.remove('editable');  // Можно добавить стиль, если нужно
+            cell.classList.remove('editable');
         });
 
         // Отключаем кнопки редактирования
@@ -70,7 +76,7 @@ async function saveChanges(id, updatedData, row) {
         alert("Failed to save changes. Please try again.");
     }
 }
-function cancelEditingDiseaseSymptom(row) {
+function cancelEditingItem(row) {
     // удалить модальные окна если есть
     const existingModal = document.querySelector('.modal-list');
     if (existingModal) {
@@ -100,9 +106,10 @@ function cancelEditingDiseaseSymptom(row) {
     cells.forEach(cell => {
         cell.removeEventListener('click', openSelectModal);  // Убираем обработчик события
     });
+    cancelEditing(row);
 }
 function openSelectModal(cell) {
-    const type = cell.dataset.field === "disease" ? 'disease' : 'symptom';
+    const type = 'manufacturer';
 
     // Удаляем все открытые модальные окна, если они есть
     const existingModal = document.querySelector('.modal-list');
@@ -138,6 +145,7 @@ function openSelectModal(cell) {
     loadSelectData(type, cell);
 }
 
+
 async function loadSelectData(type, cell) {
     try {
         const response = await axios.get(`${apiBaseUrl}/${type}s`, {
@@ -163,14 +171,15 @@ async function loadSelectData(type, cell) {
     }
 }
 function selectItem(item, cell, type) {
-    if (type === 'disease') {
-        cell.dataset.diseaseId = item.id;
-        cell.innerText = item.name;
-    } else if (type === 'symptom') {
-        cell.dataset.symptomId = item.id;
+    if (type === 'manufacturer') {
+        cell.dataset.manufacturerId = item.id;
         cell.innerText = item.name;
     }
 
     const modal = document.querySelector('.modal-list');
     if (modal) modal.remove();
+}
+
+function handleDateChange(event) {
+    cell.setAttribute('date-str', Date(event.target.value).toISOString());
 }

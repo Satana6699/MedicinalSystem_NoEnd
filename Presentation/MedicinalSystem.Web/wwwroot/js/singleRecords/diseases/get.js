@@ -25,7 +25,7 @@ async function loadData(page = 1) {
             <tr>
                 <th style="padding: 8px; text-align: left;">Имя</th>
                 <th style="padding: 8px; text-align: left;">Продолжительность</th>
-                <th style="padding: 8px; text-align: left;">Симтомы</th>
+                <th style="padding: 8px; text-align: left;">Первичные симптомы</th>
                 <th style="padding: 8px; text-align: left;">Последстивя</th>
                 <th style="padding: 8px; text-align: left;">Действия</th>
             </tr>

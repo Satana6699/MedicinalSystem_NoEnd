@@ -8,15 +8,14 @@
     });
     const modal = document.getElementById("modal");
     const modalContent = modal.querySelector(".modal-info-content");
-    const disease = item.data.disease;
-    const symptom = item.data.symptom;
     modalContent.innerHTML = `
-        <h3>Детали болезни и симптома</h3>
-        <p><strong>Болезнь:</strong> ${disease.name}</p>
-        <p><strong>Продолжительность болезни:</strong> ${disease.duration}</p>
-        <p><strong>Симптом:</strong> ${disease.symptoms}</p>
-        <p><strong>Последствия:</strong> ${disease.consequences}</p>
-        <p><strong>Симптом:</strong> ${symptom.name}</p>
+        <h3>${item.data.name}</h3>
+        <p><strong>Препорат: </strong> ${item.data.name}</p>
+        <p><strong>Показания: </strong> ${item.data.indications}</p>
+        <p><strong>Противопоказания: </strong> ${item.data.contraindications}</p>
+        <p><strong>Производитель: </strong> ${item.data.manufacturer.name}</p>
+        <p><strong>Упаковка: </strong> ${item.data.packaging}</p>
+        <p><strong>Дозировка: </strong> ${item.data.dosage}</p>
         <button onclick=\"closeModal()\">Close</button>
         <button onclick=\"deleteRow('${row.dataset.id}')\">Delete</button>
     `;

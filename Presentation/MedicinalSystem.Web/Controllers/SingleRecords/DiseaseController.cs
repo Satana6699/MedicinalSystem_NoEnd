@@ -4,6 +4,9 @@ using MedicinalSystem.Application.Requests.Queries.Diseases;
 using MedicinalSystem.Application.Requests.Commands.Diseases;
 using Microsoft.AspNetCore.Authorization;
 using MedicinalSystem.Application.Dtos.Diseases;
+using Bogus.DataSets;
+using MedicinalSystem.Domain.Entities;
+using MedicinalSystem.Application.Requests.Queries.Symptoms;
 
 namespace MedicinalSystem.Web.Controllers.SingleRecords;
 
@@ -32,6 +35,19 @@ public class DiseaseController : ControllerBase
         return Ok(diseases);
     }
 
+    [HttpGet("by-symptoms")]
+    public async Task<IActionResult> GetBySymptoms([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] Guid[]? symptomIds = null)
+    {
+        if (page < 1 || pageSize < 1)
+        {
+            return BadRequest("Page и pageSize должны быть больше нуля.");
+        }
+
+        var diseases = await _mediator.Send(new GetDiseasesBySymptomsQuery(page, pageSize, symptomIds?.ToList()));
+
+        return Ok(diseases);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -42,7 +58,14 @@ public class DiseaseController : ControllerBase
             return NotFound($"Пользователь с id {id} не найдено.");
         }
 
-        return Ok(disease);
+        var symptoms = await _mediator.Send(new GetSymptomsByDiseaseQuery(id));
+
+        if (symptoms is null)
+        {
+            return NotFound($"Симтомы не найдены");
+        }
+
+        return Ok( new { Disease = disease, Symptoms = symptoms } );
     }
 
     [HttpPost]
@@ -87,5 +110,12 @@ public class DiseaseController : ControllerBase
         }
 
         return NoContent();
+    }
+    [HttpGet("symptoms")]
+    public async Task<IActionResult> GetSymptoms([FromQuery] string? name = null)
+    {
+        var result = await _mediator.Send(new GetSymptomsAllQuery(name));
+
+        return Ok(result);
     }
 }

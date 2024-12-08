@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MedicinalSystem.Domain.Entities;
 using MedicinalSystem.Domain.Abstractions;
-
+using System.Linq;
 namespace MedicinalSystem.Infrastructure.Repositories.SingleRecords;
 
 public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
@@ -25,6 +25,15 @@ public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
     public void Update(Disease entity) => _dbContext.Diseases.Update(entity);
 
     public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
+    public async Task<IEnumerable<Symptom>> GetSymptomsByDisease(Guid? diseaseId)
+    {
+        var symptoms = await _dbContext.Set<DiseaseSymptom>()
+            .Where(ds => ds.DiseaseId == diseaseId)
+            .Select(ds => ds.Symptom)
+            .ToListAsync();
+
+        return symptoms;
+    }
 
     public async Task<int> CountAsync(string? name)
     {
@@ -36,6 +45,12 @@ public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
         return diseases.Count();
     }
 
+    public async Task<int> CountAsync(List<Guid>? symptomIds)
+    {
+        var items = await GetDiseasesBySymptomsAsync(symptomIds);
+        return items.Count();
+    }
+
     public async Task<IEnumerable<Disease>> GetPageAsync(int page, int pageSize, string? name)
     {
         var diseases = await _dbContext.Diseases.OrderBy(d => d.Id).ToListAsync();
@@ -45,5 +60,32 @@ public class DiseaseRepository(AppDbContext dbContext) : IDiseaseRepository
         }
 
         return diseases.Skip((page - 1) * pageSize).Take(pageSize);
+    }
+
+    public async Task<IEnumerable<Disease>> GetPageDiseasesBySymptomsAsync(int page, int pageSize, List<Guid>? symptomIds)
+    {
+        var results = await GetDiseasesBySymptomsAsync(symptomIds);
+
+        return results.Skip((page - 1) * pageSize).Take(pageSize);
+    }
+
+    private async Task<IEnumerable<Disease>> GetDiseasesBySymptomsAsync(List<Guid>? symptomIds)
+    {
+        symptomIds = symptomIds?.Distinct().ToList();
+
+        if (symptomIds == null || symptomIds.Count == 0)
+        {
+            var resultsAll = await Get(false);
+        }
+
+        var results = await _dbContext.Set<DiseaseSymptom>()
+        .Where(ds => symptomIds.Contains(ds.SymptomId))
+        .GroupBy(ds => ds.Disease)
+        .Where(g => g.Count() == symptomIds.Count)
+        .Select(g => g.Key)
+        .Distinct()
+        .ToListAsync();
+
+        return results;
     }
 }

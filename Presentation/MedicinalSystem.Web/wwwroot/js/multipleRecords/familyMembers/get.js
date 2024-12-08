@@ -32,8 +32,8 @@ async function loadData(page = 1) {
         const tableBody = response.data.items.map(item => `
             <tr data-id="${item.id}">
                 <td contenteditable="false">${item.name}</td>
-                <td contenteditable="false">${item.dateOfBirth}</td>
-                <td contenteditable="false">${item.gender.name}</td>
+                <td contenteditable="false" date-str=${item.dateOfBirth}>${ISODateInBaseDate(item.dateOfBirth)}</td>
+                <td data-field="gender" data-gender-id="${item.gender.id}">${item.gender.name}</td>
                 <td class="actions">
                     <a class="edit-buttons" href="javascript:void(0);" onclick="editRow(this)" title="Edit">
                         <i class="bi bi-pencil-fill"></i>
@@ -50,6 +50,13 @@ async function loadData(page = 1) {
     } catch (error) {
         ERROR(error);
     }
+}
+
+function ISODateInBaseDate(ISO) {
+    const date = new Date(ISO);
+    return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+    // на всякий случай
+    return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
 }
 
 // Инициализация

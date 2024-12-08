@@ -22,13 +22,14 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column; /* Размещаем элементы по вертикали */
 }
 
 /* Градиент для меню */
 .menu {
-    list-style: none;
-    margin: 0;
+    list-style: none; /* Убираем маркеры списка */
     padding: 0;
+    margin: 0 0 10px 0; /* Расстояние между списками */
     display: flex;
     gap: 30px;
     background: linear-gradient(45deg, #58a6ff, #2e7d32); /* Градиент */
@@ -50,8 +51,7 @@ header {
     }
 
         .menu a:hover {
-            background-color: #444; /* Темный фон при наведении */
-            color: #fff;
+            color: #58a6ff;
         }
 
 /* Если нужно уменьшить высоту строк */

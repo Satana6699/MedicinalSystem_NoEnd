@@ -8,7 +8,11 @@ public class MedicineRepository(AppDbContext dbContext) : IMedicineRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task Create(Medicine entity) => await _dbContext.Medicines.AddAsync(entity);
+    public async Task<Medicine> Create(Medicine entity) 
+    {
+        await _dbContext.Medicines.AddAsync(entity);
+        return entity;
+    } 
 
     public async Task<IEnumerable<Medicine>> Get(bool trackChanges) =>
         await (!trackChanges

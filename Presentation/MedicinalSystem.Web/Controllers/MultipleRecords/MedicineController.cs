@@ -4,6 +4,7 @@ using MedicinalSystem.Application.Requests.Queries.Medicines;
 using MedicinalSystem.Application.Requests.Commands.Medicines;
 using Microsoft.AspNetCore.Authorization;
 using MedicinalSystem.Application.Dtos.Medicines;
+using MedicinalSystem.Application.Requests.Queries.Manufacturers;
 
 namespace MedicinalSystem.Web.Controllers.MultipleRecords;
 
@@ -52,9 +53,9 @@ public class MedicineController : ControllerBase
             return BadRequest("Object for creation is null");
         }
 
-        await _mediator.Send(new CreateMedicineCommand(medicine));
+        var entity = await _mediator.Send(new CreateMedicineCommand(medicine));
 
-        return CreatedAtAction(nameof(Create), medicine);
+        return CreatedAtAction(nameof(Create), entity);
     }
 
     [HttpPut("{id}")]
@@ -86,5 +87,13 @@ public class MedicineController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("manufacturers")]
+    public async Task<IActionResult> GetManufacturers([FromQuery] string? name = null)
+    {
+        var result = await _mediator.Send(new GetManufacturersAllQuery(name));
+
+        return Ok(result);
     }
 }

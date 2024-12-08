@@ -99,6 +99,7 @@ public class DiseaseSymptomController : ControllerBase
 
         return Ok(result);
     }
+
     [HttpGet("diseases")]
     public async Task<IActionResult> GetDiseases([FromQuery] string? name = null)
     {
@@ -106,6 +107,7 @@ public class DiseaseSymptomController : ControllerBase
 
         return Ok(result);
     }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
