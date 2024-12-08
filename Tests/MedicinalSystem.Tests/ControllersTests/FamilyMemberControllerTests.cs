@@ -1,237 +1,210 @@
-//using FluentAssertions;
-//using MediatR;
-//using Microsoft.AspNetCore.Mvc;
-//using Moq;
-//using System.Net;
-//using MedicinalSystem.Application.Requests.Queries;
-//using MedicinalSystem.Application.Requests.Commands;
-//using MedicinalSystem.Web.Controllers;
-//using MedicinalSystem.Application.Dtos.FamilyMembers;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using System.Net;
+using MedicinalSystem.Application.Requests.Queries.FamilyMembers;
+using MedicinalSystem.Application.Requests.Commands.FamilyMembers;
+using MedicinalSystem.Web.Controllers.MultipleRecords;
+using MedicinalSystem.Application.Dtos.FamilyMembers;
 
-//namespace MedicinalSystem.Tests.ControllersTests;
+namespace MedicinalSystem.Tests.ControllersTests;
 
-//public class FamilyMemberControllerTests
-//{
-//    private readonly Mock<IMediator> _mediatorMock;
-//    private readonly FamilyMemberController _controller;
+public class FamilyMemberControllerTests
+{
+    private readonly Mock<IMediator> _mediatorMock;
+    private readonly FamilyMemberController _controller;
 
-//    public FamilyMemberControllerTests()
-//    {
-//        _mediatorMock = new Mock<IMediator>();
-//        _controller = new FamilyMemberController(_mediatorMock.Object);
-//    }
+    public FamilyMemberControllerTests()
+    {
+        _mediatorMock = new Mock<IMediator>();
+        _controller = new FamilyMemberController(_mediatorMock.Object);
+    }
 
-//    /*[Fact]
-//    public async Task Get_ReturnsListOfFamilyMembers()
-//    {
-//        // Arrange
-//        var familyMembers = new List<FamilyMemberDto> { new(), new() };
+    [Fact]
+    public async Task GetById_ExistingFamilyMemberId_ReturnsFamilyMember()
+    {
+        // Arrange
+        var familyMemberId = Guid.NewGuid();
+        var familyMember = new FamilyMemberDto { Id = familyMemberId };
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetFamilyMembersQuery(), CancellationToken.None))
-//            .ReturnsAsync(familyMembers);
+        _mediatorMock
+            .Setup(m => m.Send(new GetFamilyMemberByIdQuery(familyMemberId), CancellationToken.None))
+            .ReturnsAsync(familyMember);
 
-//        // Act
-//        var result = await _controller.Get();
+        // Act
+        var result = await _controller.GetById(familyMemberId);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(OkObjectResult));
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(OkObjectResult));
 
-//        var okResult = result as OkObjectResult;
-//        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        var okResult = result as OkObjectResult;
+        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        (okResult?.Value as FamilyMemberDto).Should().BeEquivalentTo(familyMember);
 
-//        var value = okResult?.Value as List<FamilyMemberDto>;
-//        value.Should().HaveCount(2);
-//        value.Should().BeEquivalentTo(familyMembers);
+        _mediatorMock.Verify(m => m.Send(new GetFamilyMemberByIdQuery(familyMemberId), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new GetFamilyMembersQuery(), CancellationToken.None), Times.Once);
-//    }*/
+    [Fact]
+    public async Task GetById_NotExistingFamilyMemberId_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var familyMemberId = Guid.NewGuid();
+        var familyMember = new FamilyMemberDto { Id = familyMemberId };
 
-//    [Fact]
-//    public async Task GetById_ExistingFamilyMemberId_ReturnsFamilyMember()
-//    {
-//        // Arrange
-//        var familyMemberId = Guid.NewGuid();
-//        var familyMember = new FamilyMemberDto { Id = familyMemberId };
+        _mediatorMock
+            .Setup(m => m.Send(new GetFamilyMemberByIdQuery(familyMemberId), CancellationToken.None))
+            .ReturnsAsync((FamilyMemberDto?)null);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetFamilyMemberByIdQuery(familyMemberId), CancellationToken.None))
-//            .ReturnsAsync(familyMember);
+        // Act
+        var result = await _controller.GetById(familyMemberId);
 
-//        // Act
-//        var result = await _controller.GetById(familyMemberId);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(OkObjectResult));
+        _mediatorMock.Verify(m => m.Send(new GetFamilyMemberByIdQuery(familyMemberId), CancellationToken.None), Times.Once);
+    }
 
-//        var okResult = result as OkObjectResult;
-//        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
-//        (okResult?.Value as FamilyMemberDto).Should().BeEquivalentTo(familyMember);
+    [Fact]
+    public async Task Create_FamilyMember_ReturnsFamilyMember()
+    {
+        // Arrange
+        var familyMember = new FamilyMemberForCreationDto();
 
-//        _mediatorMock.Verify(m => m.Send(new GetFamilyMemberByIdQuery(familyMemberId), CancellationToken.None), Times.Once);
-//    }
+        _mediatorMock.Setup(m => m.Send(new CreateFamilyMemberCommand(familyMember), CancellationToken.None));
 
-//    [Fact]
-//    public async Task GetById_NotExistingFamilyMemberId_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var familyMemberId = Guid.NewGuid();
-//        var familyMember = new FamilyMemberDto { Id = familyMemberId };
+        // Act
+        var result = await _controller.Create(familyMember);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetFamilyMemberByIdQuery(familyMemberId), CancellationToken.None))
-//            .ReturnsAsync((FamilyMemberDto?)null);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(CreatedAtActionResult));
 
-//        // Act
-//        var result = await _controller.GetById(familyMemberId);
+        var createdResult = result as CreatedAtActionResult;
+        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
+        (createdResult?.Value as FamilyMemberForCreationDto).Should().BeEquivalentTo(familyMember);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        _mediatorMock.Verify(m => m.Send(new CreateFamilyMemberCommand(familyMember), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new GetFamilyMemberByIdQuery(familyMemberId), CancellationToken.None), Times.Once);
-//    }
+    [Fact]
+    public async Task Create_NullValue_ReturnsBadRequest()
+    {
+        // Arrange and Act
+        var result = await _controller.Create(null);
 
-//    [Fact]
-//    public async Task Create_FamilyMember_ReturnsFamilyMember()
-//    {
-//        // Arrange
-//        var familyMember = new FamilyMemberForCreationDto();
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(BadRequestObjectResult));
+        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
 
-//        _mediatorMock.Setup(m => m.Send(new CreateFamilyMemberCommand(familyMember), CancellationToken.None));
+        _mediatorMock.Verify(m => m.Send(new CreateFamilyMemberCommand(It.IsAny<FamilyMemberForCreationDto>()), CancellationToken.None), Times.Never);
+    }
 
-//        // Act
-//        var result = await _controller.Create(familyMember);
+    [Fact]
+    public async Task Update_ExistingFamilyMember_ReturnsNoContentResult()
+    {
+        // Arrange
+        var familyMemberId = Guid.NewGuid();
+        var familyMember = new FamilyMemberForUpdateDto { Id = familyMemberId };
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(CreatedAtActionResult));
+        _mediatorMock
+            .Setup(m => m.Send(new UpdateFamilyMemberCommand(familyMember), CancellationToken.None))
+            .ReturnsAsync(true);
 
-//        var createdResult = result as CreatedAtActionResult;
-//        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
-//        (createdResult?.Value as FamilyMemberForCreationDto).Should().BeEquivalentTo(familyMember);
+        // Act
+        var result = await _controller.Update(familyMemberId, familyMember);
 
-//        _mediatorMock.Verify(m => m.Send(new CreateFamilyMemberCommand(familyMember), CancellationToken.None), Times.Once);
-//    }
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NoContentResult));
+        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-//    [Fact]
-//    public async Task Create_NullValue_ReturnsBadRequest()
-//    {
-//        // Arrange and Act
-//        var result = await _controller.Create(null);
+        _mediatorMock.Verify(m => m.Send(new UpdateFamilyMemberCommand(familyMember), CancellationToken.None), Times.Once);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(BadRequestObjectResult));
-//        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+    [Fact]
+    public async Task Update_NotExistingFamilyMember_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var familyMemberId = Guid.NewGuid();
+        var familyMember = new FamilyMemberForUpdateDto { Id = familyMemberId };
 
-//        _mediatorMock.Verify(m => m.Send(new CreateFamilyMemberCommand(It.IsAny<FamilyMemberForCreationDto>()), CancellationToken.None), Times.Never);
-//    }
+        _mediatorMock
+            .Setup(m => m.Send(new UpdateFamilyMemberCommand(familyMember), CancellationToken.None))
+            .ReturnsAsync(false);
 
-//    [Fact]
-//    public async Task Update_ExistingFamilyMember_ReturnsNoContentResult()
-//    {
-//        // Arrange
-//        var familyMemberId = Guid.NewGuid();
-//        var familyMember = new FamilyMemberForUpdateDto { Id = familyMemberId };
+        // Act
+        var result = await _controller.Update(familyMemberId, familyMember);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new UpdateFamilyMemberCommand(familyMember), CancellationToken.None))
-//            .ReturnsAsync(true);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Act
-//        var result = await _controller.Update(familyMemberId, familyMember);
+        _mediatorMock.Verify(m => m.Send(new UpdateFamilyMemberCommand(familyMember), CancellationToken.None), Times.Once);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NoContentResult));
-//        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
+    [Fact]
+    public async Task Update_NullValue_ReturnsBadRequest()
+    {
+        // Arrange
+        var familyMemberId = Guid.NewGuid();
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateFamilyMemberCommand(familyMember), CancellationToken.None), Times.Once);
-//    }
+        // Act
+        var result = await _controller.Update(familyMemberId, null);
 
-//    [Fact]
-//    public async Task Update_NotExistingFamilyMember_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var familyMemberId = Guid.NewGuid();
-//        var familyMember = new FamilyMemberForUpdateDto { Id = familyMemberId };
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(BadRequestObjectResult));
+        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new UpdateFamilyMemberCommand(familyMember), CancellationToken.None))
-//            .ReturnsAsync(false);
+        _mediatorMock.Verify(m => m.Send(new UpdateFamilyMemberCommand(It.IsAny<FamilyMemberForUpdateDto>()), CancellationToken.None), Times.Never);
+    }
 
-//        // Act
-//        var result = await _controller.Update(familyMemberId, familyMember);
+    [Fact]
+    public async Task Delete_ExistingFamilyMemberId_ReturnsNoContentResult()
+    {
+        // Arrange
+        var familyMemberId = Guid.NewGuid();
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        _mediatorMock
+            .Setup(m => m.Send(new DeleteFamilyMemberCommand(familyMemberId), CancellationToken.None))
+            .ReturnsAsync(true);
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateFamilyMemberCommand(familyMember), CancellationToken.None), Times.Once);
-//    }
+        // Act
+        var result = await _controller.Delete(familyMemberId);
 
-//    [Fact]
-//    public async Task Update_NullValue_ReturnsBadRequest()
-//    {
-//        // Arrange
-//        var familyMemberId = Guid.NewGuid();
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NoContentResult));
+        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-//        // Act
-//        var result = await _controller.Update(familyMemberId, null);
+        _mediatorMock.Verify(m => m.Send(new DeleteFamilyMemberCommand(familyMemberId), CancellationToken.None), Times.Once);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(BadRequestObjectResult));
-//        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+    [Fact]
+    public async Task Delete_NotExistingFamilyMemberId_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var familyMemberId = Guid.NewGuid();
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateFamilyMemberCommand(It.IsAny<FamilyMemberForUpdateDto>()), CancellationToken.None), Times.Never);
-//    }
+        _mediatorMock
+            .Setup(m => m.Send(new DeleteFamilyMemberCommand(familyMemberId), CancellationToken.None))
+            .ReturnsAsync(false);
 
-//    [Fact]
-//    public async Task Delete_ExistingFamilyMemberId_ReturnsNoContentResult()
-//    {
-//        // Arrange
-//        var familyMemberId = Guid.NewGuid();
+        // Act
+        var result = await _controller.Delete(familyMemberId);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new DeleteFamilyMemberCommand(familyMemberId), CancellationToken.None))
-//            .ReturnsAsync(true);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Act
-//        var result = await _controller.Delete(familyMemberId);
-
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NoContentResult));
-//        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
-
-//        _mediatorMock.Verify(m => m.Send(new DeleteFamilyMemberCommand(familyMemberId), CancellationToken.None), Times.Once);
-//    }
-
-//    [Fact]
-//    public async Task Delete_NotExistingFamilyMemberId_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var familyMemberId = Guid.NewGuid();
-
-//        _mediatorMock
-//            .Setup(m => m.Send(new DeleteFamilyMemberCommand(familyMemberId), CancellationToken.None))
-//            .ReturnsAsync(false);
-
-//        // Act
-//        var result = await _controller.Delete(familyMemberId);
-
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-
-//        _mediatorMock.Verify(m => m.Send(new DeleteFamilyMemberCommand(familyMemberId), CancellationToken.None), Times.Once);
-//    }
-//}
+        _mediatorMock.Verify(m => m.Send(new DeleteFamilyMemberCommand(familyMemberId), CancellationToken.None), Times.Once);
+    }
+}
 

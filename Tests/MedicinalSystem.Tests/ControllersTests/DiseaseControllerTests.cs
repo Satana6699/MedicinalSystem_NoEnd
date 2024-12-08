@@ -1,237 +1,210 @@
-//using FluentAssertions;
-//using MediatR;
-//using Microsoft.AspNetCore.Mvc;
-//using Moq;
-//using System.Net;
-//using MedicinalSystem.Application.Requests.Queries;
-//using MedicinalSystem.Application.Requests.Commands;
-//using MedicinalSystem.Web.Controllers;
-//using MedicinalSystem.Application.Dtos.Diseases;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using System.Net;
+using MedicinalSystem.Application.Requests.Queries.Diseases;
+using MedicinalSystem.Application.Requests.Commands.Diseases;
+using MedicinalSystem.Web.Controllers.SingleRecords;
+using MedicinalSystem.Application.Dtos.Diseases;
 
-//namespace MedicinalSystem.Tests.ControllersTests;
+namespace MedicinalSystem.Tests.ControllersTests;
 
-//public class DiseaseControllerTests
-//{
-//    private readonly Mock<IMediator> _mediatorMock;
-//    private readonly DiseaseController _controller;
+public class DiseaseControllerTests
+{
+    private readonly Mock<IMediator> _mediatorMock;
+    private readonly DiseaseController _controller;
 
-//    public DiseaseControllerTests()
-//    {
-//        _mediatorMock = new Mock<IMediator>();
-//        _controller = new DiseaseController(_mediatorMock.Object);
-//    }
+    public DiseaseControllerTests()
+    {
+        _mediatorMock = new Mock<IMediator>();
+        _controller = new DiseaseController(_mediatorMock.Object);
+    }
 
-//    //[Fact]
-//    //public async Task Get_ReturnsListOfDiseases()
-//    //{
-//    //    // Arrange
-//    //    var diseases = new List<DiseaseDto> { new(), new() };
+    [Fact]
+    public async Task GetById_ExistingDiseaseId_ReturnsDisease()
+    {
+        // Arrange
+        var diseaseId = Guid.NewGuid();
+        var disease = new DiseaseDto { Id = diseaseId };
 
-//    //    _mediatorMock
-//    //        .Setup(m => m.Send(new GetDiseasesAllQuery(), CancellationToken.None))
-//    //        .ReturnsAsync(diseases);
+        _mediatorMock
+            .Setup(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None))
+            .ReturnsAsync(disease);
 
-//    //    // Act
-//    //    var result = await _controller.Get();
+        // Act
+        var result = await _controller.GetById(diseaseId);
 
-//    //    // Assert
-//    //    result.Should().NotBeNull();
-//    //    result.Should().BeOfType(typeof(OkObjectResult));
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(OkObjectResult));
 
-//    //    var okResult = result as OkObjectResult;
-//    //    okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        var okResult = result as OkObjectResult;
+        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        (okResult?.Value as DiseaseDto).Should().BeEquivalentTo(disease);
 
-//    //    var value = okResult?.Value as List<DiseaseDto>;
-//    //    value.Should().HaveCount(2);
-//    //    value.Should().BeEquivalentTo(diseases);
+        _mediatorMock.Verify(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None), Times.Once);
+    }
 
-//    //    _mediatorMock.Verify(m => m.Send(new GetDiseasesAllQuery(), CancellationToken.None), Times.Once);
-//    //}
+    [Fact]
+    public async Task GetById_NotExistingDiseaseId_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var diseaseId = Guid.NewGuid();
+        var disease = new DiseaseDto { Id = diseaseId };
 
-//    [Fact]
-//    public async Task GetById_ExistingDiseaseId_ReturnsDisease()
-//    {
-//        // Arrange
-//        var diseaseId = Guid.NewGuid();
-//        var disease = new DiseaseDto { Id = diseaseId };
+        _mediatorMock
+            .Setup(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None))
+            .ReturnsAsync((DiseaseDto?)null);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None))
-//            .ReturnsAsync(disease);
+        // Act
+        var result = await _controller.GetById(diseaseId);
 
-//        // Act
-//        var result = await _controller.GetById(diseaseId);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(OkObjectResult));
+        _mediatorMock.Verify(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None), Times.Once);
+    }
 
-//        var okResult = result as OkObjectResult;
-//        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
-//        (okResult?.Value as DiseaseDto).Should().BeEquivalentTo(disease);
+    [Fact]
+    public async Task Create_Disease_ReturnsDisease()
+    {
+        // Arrange
+        var disease = new DiseaseForCreationDto();
 
-//        _mediatorMock.Verify(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None), Times.Once);
-//    }
+        _mediatorMock.Setup(m => m.Send(new CreateDiseaseCommand(disease), CancellationToken.None));
 
-//    [Fact]
-//    public async Task GetById_NotExistingDiseaseId_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var diseaseId = Guid.NewGuid();
-//        var disease = new DiseaseDto { Id = diseaseId };
+        // Act
+        var result = await _controller.Create(disease);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None))
-//            .ReturnsAsync((DiseaseDto?)null);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(CreatedAtActionResult));
 
-//        // Act
-//        var result = await _controller.GetById(diseaseId);
+        var createdResult = result as CreatedAtActionResult;
+        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
+        (createdResult?.Value as DiseaseForCreationDto).Should().BeEquivalentTo(disease);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        _mediatorMock.Verify(m => m.Send(new CreateDiseaseCommand(disease), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None), Times.Once);
-//    }
+    [Fact]
+    public async Task Create_NullValue_ReturnsBadRequest()
+    {
+        // Arrange and Act
+        var result = await _controller.Create(null);
 
-//    [Fact]
-//    public async Task Create_Disease_ReturnsDisease()
-//    {
-//        // Arrange
-//        var disease = new DiseaseForCreationDto();
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(BadRequestObjectResult));
+        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
 
-//        _mediatorMock.Setup(m => m.Send(new CreateDiseaseCommand(disease), CancellationToken.None));
+        _mediatorMock.Verify(m => m.Send(new CreateDiseaseCommand(It.IsAny<DiseaseForCreationDto>()), CancellationToken.None), Times.Never);
+    }
 
-//        // Act
-//        var result = await _controller.Create(disease);
+    [Fact]
+    public async Task Update_ExistingDisease_ReturnsNoContentResult()
+    {
+        // Arrange
+        var diseaseId = Guid.NewGuid();
+        var disease = new DiseaseForUpdateDto { Id = diseaseId };
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(CreatedAtActionResult));
+        _mediatorMock
+            .Setup(m => m.Send(new UpdateDiseaseCommand(disease), CancellationToken.None))
+            .ReturnsAsync(true);
 
-//        var createdResult = result as CreatedAtActionResult;
-//        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
-//        (createdResult?.Value as DiseaseForCreationDto).Should().BeEquivalentTo(disease);
+        // Act
+        var result = await _controller.Update(diseaseId, disease);
 
-//        _mediatorMock.Verify(m => m.Send(new CreateDiseaseCommand(disease), CancellationToken.None), Times.Once);
-//    }
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NoContentResult));
+        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-//    [Fact]
-//    public async Task Create_NullValue_ReturnsBadRequest()
-//    {
-//        // Arrange and Act
-//        var result = await _controller.Create(null);
+        _mediatorMock.Verify(m => m.Send(new UpdateDiseaseCommand(disease), CancellationToken.None), Times.Once);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(BadRequestObjectResult));
-//        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+    [Fact]
+    public async Task Update_NotExistingDisease_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var diseaseId = Guid.NewGuid();
+        var disease = new DiseaseForUpdateDto { Id = diseaseId };
 
-//        _mediatorMock.Verify(m => m.Send(new CreateDiseaseCommand(It.IsAny<DiseaseForCreationDto>()), CancellationToken.None), Times.Never);
-//    }
+        _mediatorMock
+            .Setup(m => m.Send(new UpdateDiseaseCommand(disease), CancellationToken.None))
+            .ReturnsAsync(false);
 
-//    [Fact]
-//    public async Task Update_ExistingDisease_ReturnsNoContentResult()
-//    {
-//        // Arrange
-//        var diseaseId = Guid.NewGuid();
-//        var disease = new DiseaseForUpdateDto { Id = diseaseId };
+        // Act
+        var result = await _controller.Update(diseaseId, disease);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new UpdateDiseaseCommand(disease), CancellationToken.None))
-//            .ReturnsAsync(true);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Act
-//        var result = await _controller.Update(diseaseId, disease);
+        _mediatorMock.Verify(m => m.Send(new UpdateDiseaseCommand(disease), CancellationToken.None), Times.Once);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NoContentResult));
-//        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
+    [Fact]
+    public async Task Update_NullValue_ReturnsBadRequest()
+    {
+        // Arrange
+        var diseaseId = Guid.NewGuid();
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateDiseaseCommand(disease), CancellationToken.None), Times.Once);
-//    }
+        // Act
+        var result = await _controller.Update(diseaseId, null);
 
-//    [Fact]
-//    public async Task Update_NotExistingDisease_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var diseaseId = Guid.NewGuid();
-//        var disease = new DiseaseForUpdateDto { Id = diseaseId };
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(BadRequestObjectResult));
+        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new UpdateDiseaseCommand(disease), CancellationToken.None))
-//            .ReturnsAsync(false);
+        _mediatorMock.Verify(m => m.Send(new UpdateDiseaseCommand(It.IsAny<DiseaseForUpdateDto>()), CancellationToken.None), Times.Never);
+    }
 
-//        // Act
-//        var result = await _controller.Update(diseaseId, disease);
+    [Fact]
+    public async Task Delete_ExistingDiseaseId_ReturnsNoContentResult()
+    {
+        // Arrange
+        var diseaseId = Guid.NewGuid();
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        _mediatorMock
+            .Setup(m => m.Send(new DeleteDiseaseCommand(diseaseId), CancellationToken.None))
+            .ReturnsAsync(true);
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateDiseaseCommand(disease), CancellationToken.None), Times.Once);
-//    }
+        // Act
+        var result = await _controller.Delete(diseaseId);
 
-//    [Fact]
-//    public async Task Update_NullValue_ReturnsBadRequest()
-//    {
-//        // Arrange
-//        var diseaseId = Guid.NewGuid();
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NoContentResult));
+        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-//        // Act
-//        var result = await _controller.Update(diseaseId, null);
+        _mediatorMock.Verify(m => m.Send(new DeleteDiseaseCommand(diseaseId), CancellationToken.None), Times.Once);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(BadRequestObjectResult));
-//        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+    [Fact]
+    public async Task Delete_NotExistingDiseaseId_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var diseaseId = Guid.NewGuid();
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateDiseaseCommand(It.IsAny<DiseaseForUpdateDto>()), CancellationToken.None), Times.Never);
-//    }
+        _mediatorMock
+            .Setup(m => m.Send(new DeleteDiseaseCommand(diseaseId), CancellationToken.None))
+            .ReturnsAsync(false);
 
-//    [Fact]
-//    public async Task Delete_ExistingDiseaseId_ReturnsNoContentResult()
-//    {
-//        // Arrange
-//        var diseaseId = Guid.NewGuid();
+        // Act
+        var result = await _controller.Delete(diseaseId);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new DeleteDiseaseCommand(diseaseId), CancellationToken.None))
-//            .ReturnsAsync(true);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Act
-//        var result = await _controller.Delete(diseaseId);
-
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NoContentResult));
-//        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
-
-//        _mediatorMock.Verify(m => m.Send(new DeleteDiseaseCommand(diseaseId), CancellationToken.None), Times.Once);
-//    }
-
-//    [Fact]
-//    public async Task Delete_NotExistingDiseaseId_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var diseaseId = Guid.NewGuid();
-
-//        _mediatorMock
-//            .Setup(m => m.Send(new DeleteDiseaseCommand(diseaseId), CancellationToken.None))
-//            .ReturnsAsync(false);
-
-//        // Act
-//        var result = await _controller.Delete(diseaseId);
-
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-
-//        _mediatorMock.Verify(m => m.Send(new DeleteDiseaseCommand(diseaseId), CancellationToken.None), Times.Once);
-//    }
-//}
+        _mediatorMock.Verify(m => m.Send(new DeleteDiseaseCommand(diseaseId), CancellationToken.None), Times.Once);
+    }
+}
 

@@ -1,237 +1,211 @@
-//using FluentAssertions;
-//using MediatR;
-//using Microsoft.AspNetCore.Mvc;
-//using Moq;
-//using System.Net;
-//using MedicinalSystem.Application.Requests.Queries;
-//using MedicinalSystem.Application.Requests.Commands;
-//using MedicinalSystem.Web.Controllers;
-//using MedicinalSystem.Application.Dtos.MedicinePrices;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using System.Net;
+using MedicinalSystem.Application.Requests.Queries.MedicinePrices;
+using MedicinalSystem.Application.Requests.Commands.MedicinePrices;
+using MedicinalSystem.Web.Controllers.MultipleRecords;
+using MedicinalSystem.Application.Dtos.MedicinePrices;
 
-//namespace MedicinalSystem.Tests.ControllersTests;
+namespace MedicinalSystem.Tests.ControllersTests;
 
-//public class MedicinePriceControllerTests
-//{
-//    private readonly Mock<IMediator> _mediatorMock;
-//    private readonly MedicinePriceController _controller;
+public class MedicinePriceControllerTests
+{
+    private readonly Mock<IMediator> _mediatorMock;
+    private readonly MedicinePriceController _controller;
 
-//    public MedicinePriceControllerTests()
-//    {
-//        _mediatorMock = new Mock<IMediator>();
-//        _controller = new MedicinePriceController(_mediatorMock.Object);
-//    }
+    public MedicinePriceControllerTests()
+    {
+        _mediatorMock = new Mock<IMediator>();
+        _controller = new MedicinePriceController(_mediatorMock.Object);
+    }
 
-//   /* [Fact]
-//    public async Task Get_ReturnsListOfMedicinePrices()
-//    {
-//        // Arrange
-//        var medicinePrices = new List<MedicinePriceDto> { new(), new() };
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetMedicinePricesQuery(), CancellationToken.None))
-//            .ReturnsAsync(medicinePrices);
+    [Fact]
+    public async Task GetById_ExistingMedicinePriceId_ReturnsMedicinePrice()
+    {
+        // Arrange
+        var medicinePriceId = Guid.NewGuid();
+        var medicinePrice = new MedicinePriceDto { Id = medicinePriceId };
 
-//        // Act
-//        var result = await _controller.Get();
+        _mediatorMock
+            .Setup(m => m.Send(new GetMedicinePriceByIdQuery(medicinePriceId), CancellationToken.None))
+            .ReturnsAsync(medicinePrice);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(OkObjectResult));
+        // Act
+        var result = await _controller.GetById(medicinePriceId);
 
-//        var okResult = result as OkObjectResult;
-//        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(OkObjectResult));
 
-//        var value = okResult?.Value as List<MedicinePriceDto>;
-//        value.Should().HaveCount(2);
-//        value.Should().BeEquivalentTo(medicinePrices);
+        var okResult = result as OkObjectResult;
+        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        (okResult?.Value as MedicinePriceDto).Should().BeEquivalentTo(medicinePrice);
 
-//        _mediatorMock.Verify(m => m.Send(new GetMedicinePricesQuery(), CancellationToken.None), Times.Once);
-//    }*/
+        _mediatorMock.Verify(m => m.Send(new GetMedicinePriceByIdQuery(medicinePriceId), CancellationToken.None), Times.Once);
+    }
 
-//    [Fact]
-//    public async Task GetById_ExistingMedicinePriceId_ReturnsMedicinePrice()
-//    {
-//        // Arrange
-//        var medicinePriceId = Guid.NewGuid();
-//        var medicinePrice = new MedicinePriceDto { Id = medicinePriceId };
+    [Fact]
+    public async Task GetById_NotExistingMedicinePriceId_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var medicinePriceId = Guid.NewGuid();
+        var medicinePrice = new MedicinePriceDto { Id = medicinePriceId };
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetMedicinePriceByIdQuery(medicinePriceId), CancellationToken.None))
-//            .ReturnsAsync(medicinePrice);
+        _mediatorMock
+            .Setup(m => m.Send(new GetMedicinePriceByIdQuery(medicinePriceId), CancellationToken.None))
+            .ReturnsAsync((MedicinePriceDto?)null);
 
-//        // Act
-//        var result = await _controller.GetById(medicinePriceId);
+        // Act
+        var result = await _controller.GetById(medicinePriceId);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(OkObjectResult));
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        var okResult = result as OkObjectResult;
-//        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
-//        (okResult?.Value as MedicinePriceDto).Should().BeEquivalentTo(medicinePrice);
+        _mediatorMock.Verify(m => m.Send(new GetMedicinePriceByIdQuery(medicinePriceId), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new GetMedicinePriceByIdQuery(medicinePriceId), CancellationToken.None), Times.Once);
-//    }
+    [Fact]
+    public async Task Create_MedicinePrice_ReturnsMedicinePrice()
+    {
+        // Arrange
+        var medicinePrice = new MedicinePriceForCreationDto();
 
-//    [Fact]
-//    public async Task GetById_NotExistingMedicinePriceId_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var medicinePriceId = Guid.NewGuid();
-//        var medicinePrice = new MedicinePriceDto { Id = medicinePriceId };
+        _mediatorMock.Setup(m => m.Send(new CreateMedicinePriceCommand(medicinePrice), CancellationToken.None));
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetMedicinePriceByIdQuery(medicinePriceId), CancellationToken.None))
-//            .ReturnsAsync((MedicinePriceDto?)null);
+        // Act
+        var result = await _controller.Create(medicinePrice);
 
-//        // Act
-//        var result = await _controller.GetById(medicinePriceId);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(CreatedAtActionResult));
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        var createdResult = result as CreatedAtActionResult;
+        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
+        (createdResult?.Value as MedicinePriceForCreationDto).Should().BeEquivalentTo(medicinePrice);
 
-//        _mediatorMock.Verify(m => m.Send(new GetMedicinePriceByIdQuery(medicinePriceId), CancellationToken.None), Times.Once);
-//    }
+        _mediatorMock.Verify(m => m.Send(new CreateMedicinePriceCommand(medicinePrice), CancellationToken.None), Times.Once);
+    }
 
-//    [Fact]
-//    public async Task Create_MedicinePrice_ReturnsMedicinePrice()
-//    {
-//        // Arrange
-//        var medicinePrice = new MedicinePriceForCreationDto();
+    [Fact]
+    public async Task Create_NullValue_ReturnsBadRequest()
+    {
+        // Arrange and Act
+        var result = await _controller.Create(null);
 
-//        _mediatorMock.Setup(m => m.Send(new CreateMedicinePriceCommand(medicinePrice), CancellationToken.None));
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(BadRequestObjectResult));
+        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
 
-//        // Act
-//        var result = await _controller.Create(medicinePrice);
+        _mediatorMock.Verify(m => m.Send(new CreateMedicinePriceCommand(It.IsAny<MedicinePriceForCreationDto>()), CancellationToken.None), Times.Never);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(CreatedAtActionResult));
+    [Fact]
+    public async Task Update_ExistingMedicinePrice_ReturnsNoContentResult()
+    {
+        // Arrange
+        var medicinePriceId = Guid.NewGuid();
+        var medicinePrice = new MedicinePriceForUpdateDto { Id = medicinePriceId };
 
-//        var createdResult = result as CreatedAtActionResult;
-//        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
-//        (createdResult?.Value as MedicinePriceForCreationDto).Should().BeEquivalentTo(medicinePrice);
+        _mediatorMock
+            .Setup(m => m.Send(new UpdateMedicinePriceCommand(medicinePrice), CancellationToken.None))
+            .ReturnsAsync(true);
 
-//        _mediatorMock.Verify(m => m.Send(new CreateMedicinePriceCommand(medicinePrice), CancellationToken.None), Times.Once);
-//    }
+        // Act
+        var result = await _controller.Update(medicinePriceId, medicinePrice);
 
-//    [Fact]
-//    public async Task Create_NullValue_ReturnsBadRequest()
-//    {
-//        // Arrange and Act
-//        var result = await _controller.Create(null);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NoContentResult));
+        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(BadRequestObjectResult));
-//        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        _mediatorMock.Verify(m => m.Send(new UpdateMedicinePriceCommand(medicinePrice), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new CreateMedicinePriceCommand(It.IsAny<MedicinePriceForCreationDto>()), CancellationToken.None), Times.Never);
-//    }
+    [Fact]
+    public async Task Update_NotExistingMedicinePrice_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var medicinePriceId = Guid.NewGuid();
+        var medicinePrice = new MedicinePriceForUpdateDto { Id = medicinePriceId };
 
-//    [Fact]
-//    public async Task Update_ExistingMedicinePrice_ReturnsNoContentResult()
-//    {
-//        // Arrange
-//        var medicinePriceId = Guid.NewGuid();
-//        var medicinePrice = new MedicinePriceForUpdateDto { Id = medicinePriceId };
+        _mediatorMock
+            .Setup(m => m.Send(new UpdateMedicinePriceCommand(medicinePrice), CancellationToken.None))
+            .ReturnsAsync(false);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new UpdateMedicinePriceCommand(medicinePrice), CancellationToken.None))
-//            .ReturnsAsync(true);
+        // Act
+        var result = await _controller.Update(medicinePriceId, medicinePrice);
 
-//        // Act
-//        var result = await _controller.Update(medicinePriceId, medicinePrice);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NoContentResult));
-//        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
+        _mediatorMock.Verify(m => m.Send(new UpdateMedicinePriceCommand(medicinePrice), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateMedicinePriceCommand(medicinePrice), CancellationToken.None), Times.Once);
-//    }
+    [Fact]
+    public async Task Update_NullValue_ReturnsBadRequest()
+    {
+        // Arrange
+        var medicinePriceId = Guid.NewGuid();
 
-//    [Fact]
-//    public async Task Update_NotExistingMedicinePrice_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var medicinePriceId = Guid.NewGuid();
-//        var medicinePrice = new MedicinePriceForUpdateDto { Id = medicinePriceId };
+        // Act
+        var result = await _controller.Update(medicinePriceId, null);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new UpdateMedicinePriceCommand(medicinePrice), CancellationToken.None))
-//            .ReturnsAsync(false);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(BadRequestObjectResult));
+        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
 
-//        // Act
-//        var result = await _controller.Update(medicinePriceId, medicinePrice);
+        _mediatorMock.Verify(m => m.Send(new UpdateMedicinePriceCommand(It.IsAny<MedicinePriceForUpdateDto>()), CancellationToken.None), Times.Never);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+    [Fact]
+    public async Task Delete_ExistingMedicinePriceId_ReturnsNoContentResult()
+    {
+        // Arrange
+        var medicinePriceId = Guid.NewGuid();
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateMedicinePriceCommand(medicinePrice), CancellationToken.None), Times.Once);
-//    }
+        _mediatorMock
+            .Setup(m => m.Send(new DeleteMedicinePriceCommand(medicinePriceId), CancellationToken.None))
+            .ReturnsAsync(true);
 
-//    [Fact]
-//    public async Task Update_NullValue_ReturnsBadRequest()
-//    {
-//        // Arrange
-//        var medicinePriceId = Guid.NewGuid();
+        // Act
+        var result = await _controller.Delete(medicinePriceId);
 
-//        // Act
-//        var result = await _controller.Update(medicinePriceId, null);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NoContentResult));
+        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(BadRequestObjectResult));
-//        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        _mediatorMock.Verify(m => m.Send(new DeleteMedicinePriceCommand(medicinePriceId), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateMedicinePriceCommand(It.IsAny<MedicinePriceForUpdateDto>()), CancellationToken.None), Times.Never);
-//    }
+    [Fact]
+    public async Task Delete_NotExistingMedicinePriceId_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var medicinePriceId = Guid.NewGuid();
 
-//    [Fact]
-//    public async Task Delete_ExistingMedicinePriceId_ReturnsNoContentResult()
-//    {
-//        // Arrange
-//        var medicinePriceId = Guid.NewGuid();
+        _mediatorMock
+            .Setup(m => m.Send(new DeleteMedicinePriceCommand(medicinePriceId), CancellationToken.None))
+            .ReturnsAsync(false);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new DeleteMedicinePriceCommand(medicinePriceId), CancellationToken.None))
-//            .ReturnsAsync(true);
+        // Act
+        var result = await _controller.Delete(medicinePriceId);
 
-//        // Act
-//        var result = await _controller.Delete(medicinePriceId);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NoContentResult));
-//        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
-
-//        _mediatorMock.Verify(m => m.Send(new DeleteMedicinePriceCommand(medicinePriceId), CancellationToken.None), Times.Once);
-//    }
-
-//    [Fact]
-//    public async Task Delete_NotExistingMedicinePriceId_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var medicinePriceId = Guid.NewGuid();
-
-//        _mediatorMock
-//            .Setup(m => m.Send(new DeleteMedicinePriceCommand(medicinePriceId), CancellationToken.None))
-//            .ReturnsAsync(false);
-
-//        // Act
-//        var result = await _controller.Delete(medicinePriceId);
-
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-
-//        _mediatorMock.Verify(m => m.Send(new DeleteMedicinePriceCommand(medicinePriceId), CancellationToken.None), Times.Once);
-//    }
-//}
+        _mediatorMock.Verify(m => m.Send(new DeleteMedicinePriceCommand(medicinePriceId), CancellationToken.None), Times.Once);
+    }
+}
 

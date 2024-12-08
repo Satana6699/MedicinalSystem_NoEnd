@@ -29,6 +29,18 @@
     `;
 
         modal.style.display = "block";
+        const editButtons = document.querySelectorAll('.edit-buttons');
+        if (localStorage.getItem('role') === 'Admin') {
+            // Показать все кнопки редактирования
+            editButtons.forEach(button => {
+                button.style.display = 'inline-block';
+            });
+        } else {
+            // Скрыть все кнопки редактирования
+            editButtons.forEach(button => {
+                button.style.display = 'none';
+            });
+        }
     }
     catch (error) {
         console.error("Error:", error);
