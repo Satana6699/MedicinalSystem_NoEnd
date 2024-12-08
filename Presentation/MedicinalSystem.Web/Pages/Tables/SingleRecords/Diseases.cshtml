@@ -10,32 +10,20 @@
         <button onclick="toggleToGuidFilter()">Фильтр по симптомам</button>
     </div>
 
-    <div id="filter-guid-container" style="display: none; display: flex, none; gap: 10px;">
+    <div id="filter-guid-container" style="display: none;">
         <label for="filter-name">Фильтр по симптомам:</label>
-        <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
-        <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
-        <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
-
-        <button onclick="collectSymptomIds()">Поиск</button>
-        <button onclick="toggleToNameFilter()">Фильтр по имени</button>
+        <div class="guid-row">
+            <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
+            <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
+            <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
+        </div>
+        <div class="guid-actions">
+            <button onclick="collectSymptomIds()">Поиск</button>
+            <button onclick="toggleToNameFilter()">Фильтр по имени</button>
+        </div>
     </div>
+
 </div>
-
-<style>
-    .guid-cell {
-        border: 1px solid #58a6ff;
-        padding: 10px;
-        text-align: center;
-        cursor: pointer;
-        background-color: #34495e;
-        color: #eaeaea;
-        transition: background-color 0.3s;
-    }
-
-        .guid-cell:hover {
-            background-color: #2c3e50;
-        }
-</style>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
@@ -54,7 +42,8 @@
             cell.dataset.symptomId = "0";
             cell.innerText = "Симптом";
         });
-        document.getElementById("filter-guid-container").style.display = "flex";
+        document.getElementById("filter-guid-container").style.display = "block";
+        document.getElementById("filter-container").style.maxWidth = "800px";
         loadData();
     }
 
@@ -62,6 +51,7 @@
         document.getElementById("filter-guid-container").style.display = "none";
         document.getElementById("filter-name").value = "";
         document.getElementById("filter-name-container").style.display = "block";
+        document.getElementById("filter-container").style.maxWidth = "300px";
         loadData();
     }
 </script>

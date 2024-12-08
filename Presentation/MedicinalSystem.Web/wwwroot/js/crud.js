@@ -147,7 +147,7 @@ function closeModal() {
 }
 
 function ERROR(error){
-    if (typeof error.response.status !== "undefined" && error.response.status === 401) {
+    if (typeof error.response !== "undefined" && typeof error.response.status !== "undefined" && error.response.status === 401) {
         alert('Сначала требуется пройти авторизацию.');
         // Если код состояния 401, перенаправляем на страницу авторизации
         window.location.href = '/Home/Auth';
