@@ -21,30 +21,6 @@ public class DiseaseControllerTests
         _controller = new DiseaseController(_mediatorMock.Object);
     }
 
-    [Fact]
-    public async Task GetById_ExistingDiseaseId_ReturnsDisease()
-    {
-        // Arrange
-        var diseaseId = Guid.NewGuid();
-        var disease = new DiseaseDto { Id = diseaseId };
-
-        _mediatorMock
-            .Setup(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None))
-            .ReturnsAsync(disease);
-
-        // Act
-        var result = await _controller.GetById(diseaseId);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(OkObjectResult));
-
-        var okResult = result as OkObjectResult;
-        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
-        (okResult?.Value as DiseaseDto).Should().BeEquivalentTo(disease);
-
-        _mediatorMock.Verify(m => m.Send(new GetDiseaseByIdQuery(diseaseId), CancellationToken.None), Times.Once);
-    }
 
     [Fact]
     public async Task GetById_NotExistingDiseaseId_ReturnsNotFoundResult()

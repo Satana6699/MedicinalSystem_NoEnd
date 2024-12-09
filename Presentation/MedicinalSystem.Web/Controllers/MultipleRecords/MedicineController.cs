@@ -5,6 +5,7 @@ using MedicinalSystem.Application.Requests.Commands.Medicines;
 using Microsoft.AspNetCore.Authorization;
 using MedicinalSystem.Application.Dtos.Medicines;
 using MedicinalSystem.Application.Requests.Queries.Manufacturers;
+using Humanizer;
 
 namespace MedicinalSystem.Web.Controllers.MultipleRecords;
 
@@ -50,7 +51,7 @@ public class MedicineController : ControllerBase
     {
         if (medicine is null)
         {
-            return BadRequest("Object for creation is null");
+            return BadRequest("Данные не предоставлены");
         }
 
         var entity = await _mediator.Send(new CreateMedicineCommand(medicine));

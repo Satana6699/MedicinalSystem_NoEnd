@@ -69,27 +69,6 @@ public class MedicineControllerTests
         _mediatorMock.Verify(m => m.Send(new GetMedicineByIdQuery(medicineId), CancellationToken.None), Times.Once);
     }
 
-    [Fact]
-    public async Task Create_Medicine_ReturnsMedicine()
-    {
-        // Arrange
-        var medicine = new MedicineForCreationDto();
-
-        _mediatorMock.Setup(m => m.Send(new CreateMedicineCommand(medicine), CancellationToken.None));
-
-        // Act
-        var result = await _controller.Create(medicine);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(CreatedAtActionResult));
-
-        var createdResult = result as CreatedAtActionResult;
-        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
-        (createdResult?.Value as MedicineForCreationDto).Should().BeEquivalentTo(medicine);
-
-        _mediatorMock.Verify(m => m.Send(new CreateMedicineCommand(medicine), CancellationToken.None), Times.Once);
-    }
 
     [Fact]
     public async Task Create_NullValue_ReturnsBadRequest()

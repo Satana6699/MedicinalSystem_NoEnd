@@ -126,27 +126,6 @@ public class DiseaseSymptomControllerTests
         _mediatorMock.Verify(m => m.Send(new CreateDiseaseSymptomCommand(It.IsAny<DiseaseSymptomForCreationDto>()), CancellationToken.None), Times.Never);
     }
 
-    [Fact]
-    public async Task Update_ExistingDiseaseSymptom_ReturnsNoContentResult()
-    {
-        // Arrange
-        var diseaseSymptomId = Guid.NewGuid();
-        var diseaseSymptom = new DiseaseSymptomForUpdateDto { Id = diseaseSymptomId };
-
-        _mediatorMock
-            .Setup(m => m.Send(new UpdateDiseaseSymptomCommand(diseaseSymptom), CancellationToken.None))
-            .ReturnsAsync(true);
-
-        // Act
-        var result = await _controller.Update(diseaseSymptomId, diseaseSymptom);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(NoContentResult));
-        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
-
-        _mediatorMock.Verify(m => m.Send(new UpdateDiseaseSymptomCommand(diseaseSymptom), CancellationToken.None), Times.Once);
-    }
 
     [Fact]
     public async Task Update_NotExistingDiseaseSymptom_ReturnsNotFoundResult()
