@@ -1,0 +1,37 @@
+﻿table {
+    width: 80%; /* Устанавливаем ширину таблицы */
+    margin: 20px auto; /* Центрируем таблицу на странице */
+    border-collapse: collapse;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Добавляем тень */
+    border-radius: 8px; /* Скругляем углы */
+    overflow: hidden; /* Убираем выходы содержимого за границы */
+}
+
+    table caption {
+        caption-side: top;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #2e7d32;
+        margin-bottom: 10px; /* Увеличим отступ для красоты */
+        text-align: center;
+    }
+
+    table th, table td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ccc;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #e6f7e6;
+    }
+
+    table tr:nth-child(odd) {
+        background-color: #ccebd5;
+    }
+
+    table tr:hover {
+        background-color: #a8d3b5;
+        transform: scale(1.005);
+        transition: background-color 0.3s, transform 0.3s;
+    }

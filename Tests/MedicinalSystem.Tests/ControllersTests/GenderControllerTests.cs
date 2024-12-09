@@ -1,237 +1,211 @@
-//using FluentAssertions;
-//using MediatR;
-//using Microsoft.AspNetCore.Mvc;
-//using Moq;
-//using System.Net;
-//using MedicinalSystem.Application.Requests.Queries;
-//using MedicinalSystem.Application.Requests.Commands;
-//using MedicinalSystem.Web.Controllers;
-//using MedicinalSystem.Application.Dtos.Genders;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using System.Net;
+using MedicinalSystem.Application.Requests.Queries.Genders;
+using MedicinalSystem.Application.Requests.Commands.Genders;
+using MedicinalSystem.Web.Controllers.SingleRecords;
+using MedicinalSystem.Application.Dtos.Genders;
 
-//namespace MedicinalSystem.Tests.ControllersTests;
+namespace MedicinalSystem.Tests.ControllersTests;
 
-//public class GenderControllerTests
-//{
-//    private readonly Mock<IMediator> _mediatorMock;
-//    private readonly GenderController _controller;
+public class GenderControllerTests
+{
+    private readonly Mock<IMediator> _mediatorMock;
+    private readonly GenderController _controller;
 
-//    public GenderControllerTests()
-//    {
-//        _mediatorMock = new Mock<IMediator>();
-//        _controller = new GenderController(_mediatorMock.Object);
-//    }
+    public GenderControllerTests()
+    {
+        _mediatorMock = new Mock<IMediator>();
+        _controller = new GenderController(_mediatorMock.Object);
+    }
 
-//    /*[Fact]
-//    public async Task Get_ReturnsListOfGenders()
-//    {
-//        // Arrange
-//        var genders = new List<GenderDto> { new(), new() };
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetGendersQuery(), CancellationToken.None))
-//            .ReturnsAsync(genders);
+    [Fact]
+    public async Task GetById_ExistingGenderId_ReturnsGender()
+    {
+        // Arrange
+        var genderId = Guid.NewGuid();
+        var gender = new GenderDto { Id = genderId };
 
-//        // Act
-//        var result = await _controller.Get();
+        _mediatorMock
+            .Setup(m => m.Send(new GetGenderByIdQuery(genderId), CancellationToken.None))
+            .ReturnsAsync(gender);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(OkObjectResult));
+        // Act
+        var result = await _controller.GetById(genderId);
 
-//        var okResult = result as OkObjectResult;
-//        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(OkObjectResult));
 
-//        var value = okResult?.Value as List<GenderDto>;
-//        value.Should().HaveCount(2);
-//        value.Should().BeEquivalentTo(genders);
+        var okResult = result as OkObjectResult;
+        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        (okResult?.Value as GenderDto).Should().BeEquivalentTo(gender);
 
-//        _mediatorMock.Verify(m => m.Send(new GetGendersQuery(), CancellationToken.None), Times.Once);
-//    }*/
+        _mediatorMock.Verify(m => m.Send(new GetGenderByIdQuery(genderId), CancellationToken.None), Times.Once);
+    }
 
-//    [Fact]
-//    public async Task GetById_ExistingGenderId_ReturnsGender()
-//    {
-//        // Arrange
-//        var genderId = Guid.NewGuid();
-//        var gender = new GenderDto { Id = genderId };
+    [Fact]
+    public async Task GetById_NotExistingGenderId_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var genderId = Guid.NewGuid();
+        var gender = new GenderDto { Id = genderId };
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetGenderByIdQuery(genderId), CancellationToken.None))
-//            .ReturnsAsync(gender);
+        _mediatorMock
+            .Setup(m => m.Send(new GetGenderByIdQuery(genderId), CancellationToken.None))
+            .ReturnsAsync((GenderDto?)null);
 
-//        // Act
-//        var result = await _controller.GetById(genderId);
+        // Act
+        var result = await _controller.GetById(genderId);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(OkObjectResult));
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        var okResult = result as OkObjectResult;
-//        okResult?.StatusCode.Should().Be((int)HttpStatusCode.OK);
-//        (okResult?.Value as GenderDto).Should().BeEquivalentTo(gender);
+        _mediatorMock.Verify(m => m.Send(new GetGenderByIdQuery(genderId), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new GetGenderByIdQuery(genderId), CancellationToken.None), Times.Once);
-//    }
+    [Fact]
+    public async Task Create_Gender_ReturnsGender()
+    {
+        // Arrange
+        var gender = new GenderForCreationDto();
 
-//    [Fact]
-//    public async Task GetById_NotExistingGenderId_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var genderId = Guid.NewGuid();
-//        var gender = new GenderDto { Id = genderId };
+        _mediatorMock.Setup(m => m.Send(new CreateGenderCommand(gender), CancellationToken.None));
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new GetGenderByIdQuery(genderId), CancellationToken.None))
-//            .ReturnsAsync((GenderDto?)null);
+        // Act
+        var result = await _controller.Create(gender);
 
-//        // Act
-//        var result = await _controller.GetById(genderId);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(CreatedAtActionResult));
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        var createdResult = result as CreatedAtActionResult;
+        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
+        (createdResult?.Value as GenderForCreationDto).Should().BeEquivalentTo(gender);
 
-//        _mediatorMock.Verify(m => m.Send(new GetGenderByIdQuery(genderId), CancellationToken.None), Times.Once);
-//    }
+        _mediatorMock.Verify(m => m.Send(new CreateGenderCommand(gender), CancellationToken.None), Times.Once);
+    }
 
-//    [Fact]
-//    public async Task Create_Gender_ReturnsGender()
-//    {
-//        // Arrange
-//        var gender = new GenderForCreationDto();
+    [Fact]
+    public async Task Create_NullValue_ReturnsBadRequest()
+    {
+        // Arrange and Act
+        var result = await _controller.Create(null);
 
-//        _mediatorMock.Setup(m => m.Send(new CreateGenderCommand(gender), CancellationToken.None));
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(BadRequestObjectResult));
+        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
 
-//        // Act
-//        var result = await _controller.Create(gender);
+        _mediatorMock.Verify(m => m.Send(new CreateGenderCommand(It.IsAny<GenderForCreationDto>()), CancellationToken.None), Times.Never);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(CreatedAtActionResult));
+    [Fact]
+    public async Task Update_ExistingGender_ReturnsNoContentResult()
+    {
+        // Arrange
+        var genderId = Guid.NewGuid();
+        var gender = new GenderForUpdateDto { Id = genderId };
 
-//        var createdResult = result as CreatedAtActionResult;
-//        createdResult?.StatusCode.Should().Be((int)HttpStatusCode.Created);
-//        (createdResult?.Value as GenderForCreationDto).Should().BeEquivalentTo(gender);
+        _mediatorMock
+            .Setup(m => m.Send(new UpdateGenderCommand(gender), CancellationToken.None))
+            .ReturnsAsync(true);
 
-//        _mediatorMock.Verify(m => m.Send(new CreateGenderCommand(gender), CancellationToken.None), Times.Once);
-//    }
+        // Act
+        var result = await _controller.Update(genderId, gender);
 
-//    [Fact]
-//    public async Task Create_NullValue_ReturnsBadRequest()
-//    {
-//        // Arrange and Act
-//        var result = await _controller.Create(null);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NoContentResult));
+        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(BadRequestObjectResult));
-//        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        _mediatorMock.Verify(m => m.Send(new UpdateGenderCommand(gender), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new CreateGenderCommand(It.IsAny<GenderForCreationDto>()), CancellationToken.None), Times.Never);
-//    }
+    [Fact]
+    public async Task Update_NotExistingGender_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var genderId = Guid.NewGuid();
+        var gender = new GenderForUpdateDto { Id = genderId };
 
-//    [Fact]
-//    public async Task Update_ExistingGender_ReturnsNoContentResult()
-//    {
-//        // Arrange
-//        var genderId = Guid.NewGuid();
-//        var gender = new GenderForUpdateDto { Id = genderId };
+        _mediatorMock
+            .Setup(m => m.Send(new UpdateGenderCommand(gender), CancellationToken.None))
+            .ReturnsAsync(false);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new UpdateGenderCommand(gender), CancellationToken.None))
-//            .ReturnsAsync(true);
+        // Act
+        var result = await _controller.Update(genderId, gender);
 
-//        // Act
-//        var result = await _controller.Update(genderId, gender);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NoContentResult));
-//        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
+        _mediatorMock.Verify(m => m.Send(new UpdateGenderCommand(gender), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateGenderCommand(gender), CancellationToken.None), Times.Once);
-//    }
+    [Fact]
+    public async Task Update_NullValue_ReturnsBadRequest()
+    {
+        // Arrange
+        var genderId = Guid.NewGuid();
 
-//    [Fact]
-//    public async Task Update_NotExistingGender_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var genderId = Guid.NewGuid();
-//        var gender = new GenderForUpdateDto { Id = genderId };
+        // Act
+        var result = await _controller.Update(genderId, null);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new UpdateGenderCommand(gender), CancellationToken.None))
-//            .ReturnsAsync(false);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(BadRequestObjectResult));
+        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
 
-//        // Act
-//        var result = await _controller.Update(genderId, gender);
+        _mediatorMock.Verify(m => m.Send(new UpdateGenderCommand(It.IsAny<GenderForUpdateDto>()), CancellationToken.None), Times.Never);
+    }
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+    [Fact]
+    public async Task Delete_ExistingGenderId_ReturnsNoContentResult()
+    {
+        // Arrange
+        var genderId = Guid.NewGuid();
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateGenderCommand(gender), CancellationToken.None), Times.Once);
-//    }
+        _mediatorMock
+            .Setup(m => m.Send(new DeleteGenderCommand(genderId), CancellationToken.None))
+            .ReturnsAsync(true);
 
-//    [Fact]
-//    public async Task Update_NullValue_ReturnsBadRequest()
-//    {
-//        // Arrange
-//        var genderId = Guid.NewGuid();
+        // Act
+        var result = await _controller.Delete(genderId);
 
-//        // Act
-//        var result = await _controller.Update(genderId, null);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NoContentResult));
+        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(BadRequestObjectResult));
-//        (result as BadRequestObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        _mediatorMock.Verify(m => m.Send(new DeleteGenderCommand(genderId), CancellationToken.None), Times.Once);
+    }
 
-//        _mediatorMock.Verify(m => m.Send(new UpdateGenderCommand(It.IsAny<GenderForUpdateDto>()), CancellationToken.None), Times.Never);
-//    }
+    [Fact]
+    public async Task Delete_NotExistingGenderId_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var genderId = Guid.NewGuid();
 
-//    [Fact]
-//    public async Task Delete_ExistingGenderId_ReturnsNoContentResult()
-//    {
-//        // Arrange
-//        var genderId = Guid.NewGuid();
+        _mediatorMock
+            .Setup(m => m.Send(new DeleteGenderCommand(genderId), CancellationToken.None))
+            .ReturnsAsync(false);
 
-//        _mediatorMock
-//            .Setup(m => m.Send(new DeleteGenderCommand(genderId), CancellationToken.None))
-//            .ReturnsAsync(true);
+        // Act
+        var result = await _controller.Delete(genderId);
 
-//        // Act
-//        var result = await _controller.Delete(genderId);
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(NotFoundObjectResult));
+        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NoContentResult));
-//        (result as NoContentResult)?.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
-
-//        _mediatorMock.Verify(m => m.Send(new DeleteGenderCommand(genderId), CancellationToken.None), Times.Once);
-//    }
-
-//    [Fact]
-//    public async Task Delete_NotExistingGenderId_ReturnsNotFoundResult()
-//    {
-//        // Arrange
-//        var genderId = Guid.NewGuid();
-
-//        _mediatorMock
-//            .Setup(m => m.Send(new DeleteGenderCommand(genderId), CancellationToken.None))
-//            .ReturnsAsync(false);
-
-//        // Act
-//        var result = await _controller.Delete(genderId);
-
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Should().BeOfType(typeof(NotFoundObjectResult));
-//        (result as NotFoundObjectResult)?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-
-//        _mediatorMock.Verify(m => m.Send(new DeleteGenderCommand(genderId), CancellationToken.None), Times.Once);
-//    }
-//}
+        _mediatorMock.Verify(m => m.Send(new DeleteGenderCommand(genderId), CancellationToken.None), Times.Once);
+    }
+}
 

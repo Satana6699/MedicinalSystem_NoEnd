@@ -18,10 +18,6 @@ public class GetUsersAllQueryHandler : IRequestHandler<GetUsersAllQuery, IEnumer
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<User>> Handle(GetUsersAllQuery request, CancellationToken cancellationToken)
-    {
-        var users = _mapper.Map<IEnumerable<User>>(await _repository.Get(trackChanges: false, request.UserName));
-
-        return users;
-    }
+    public async Task<IEnumerable<User>> Handle(GetUsersAllQuery request, CancellationToken cancellationToken) =>
+        _mapper.Map<IEnumerable<User>>(await _repository.Get(trackChanges: false, request.UserName));
 }

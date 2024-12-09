@@ -1,4 +1,4 @@
-﻿function createTable(itemsLength, totalItems, currentPage, tableTitle, tableHead, tableBody) {
+﻿function createTable(itemsLength, totalItems, currentPage, tableTitle, tableHead, tableBody, loadDataFunction = loadData) {
     const container = document.getElementById("table-container");
     container.innerHTML = "";
 
@@ -40,10 +40,10 @@
         });
     }
 
-    createPagination(totalItems, currentPage);
+    createPagination(totalItems, currentPage, loadDataFunction);
 }
 
-function createPagination(totalItems, currentPage) {
+function createPagination(totalItems, currentPage, loadDataFunction = loadData) {
     const container = document.getElementById("table-container");
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -62,7 +62,7 @@ function createPagination(totalItems, currentPage) {
     prevButton.style.borderRadius = "4px";
     prevButton.style.cursor = currentPage > 1 ? "pointer" : "not-allowed";
     prevButton.onclick = () => {
-        if (currentPage > 1) loadData(currentPage - 1);
+        if (currentPage > 1) loadDataFunction(currentPage - 1);
     };
 
     paginationDiv.appendChild(prevButton);
@@ -83,9 +83,9 @@ function createPagination(totalItems, currentPage) {
     pageInput.onchange = () => {
         const inputPage = parseInt(pageInput.value, 10);
         if (!isNaN(inputPage)) {
-            if (inputPage < 1) loadData(1);
-            else if (inputPage > totalPages) loadData(totalPages);
-            else loadData(inputPage);
+            if (inputPage < 1) loadDataFunction(1);
+            else if (inputPage > totalPages) loadDataFunction(totalPages);
+            else loadDataFunction(inputPage);
         }
     };
     paginationDiv.appendChild(pageInput);
@@ -101,7 +101,7 @@ function createPagination(totalItems, currentPage) {
     nextButton.style.borderRadius = "4px";
     nextButton.style.cursor = currentPage < totalPages ? "pointer" : "not-allowed";
     nextButton.onclick = () => {
-        if (currentPage < totalPages) loadData(currentPage + 1);
+        if (currentPage < totalPages) loadDataFunction(currentPage + 1);
     };
 
     paginationDiv.appendChild(nextButton);
@@ -147,7 +147,7 @@ function closeModal() {
 }
 
 function ERROR(error){
-    if (typeof error.response.status !== "undefined" && error.response.status === 401) {
+    if (typeof error.response !== "undefined" && typeof error.response.status !== "undefined" && error.response.status === 401) {
         alert('Сначала требуется пройти авторизацию.');
         // Если код состояния 401, перенаправляем на страницу авторизации
         window.location.href = '/Home/Auth';

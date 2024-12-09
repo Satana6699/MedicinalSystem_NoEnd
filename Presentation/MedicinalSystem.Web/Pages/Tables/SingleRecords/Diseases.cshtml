@@ -1,0 +1,57 @@
+﻿@page
+@{
+    Layout = "~/Pages/Shared/Tables.cshtml"; // Указываем путь к макету
+    ViewData["Title"] = "Болезни";
+}
+<div id="filter-container">
+    <div id="filter-name-container">
+        <label for="filter-name">Фильтр по имени:</label>
+        <input type="text" id="filter-name" oninput="applyFilters()">
+        <button onclick="toggleToGuidFilter()">Фильтр по симптомам</button>
+    </div>
+
+    <div id="filter-guid-container" style="display: none;">
+        <label for="filter-name">Фильтр по симптомам:</label>
+        <div class="guid-row">
+            <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
+            <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
+            <div class="guid-cell" onclick="openSelectModal(this)" data-symptom-id="0">Симптом</div>
+        </div>
+        <div class="guid-actions">
+            <button onclick="collectSymptomIds()">Поиск</button>
+            <button onclick="toggleToNameFilter()">Фильтр по имени</button>
+        </div>
+    </div>
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<script rel="stylesheet" src="~/js/singleRecords/diseases/diseasesBySymptoms.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/singleRecords/diseases/get.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/singleRecords/diseases/edit.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/singleRecords/diseases/create.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/singleRecords/diseases/info.js" asp-append-version="true"></script>
+
+<script>
+    function toggleToGuidFilter() {
+        document.getElementById("filter-name").value = "";
+        document.getElementById("filter-name-container").style.display = "none";
+        const symptomCells = document.querySelectorAll('.guid-cell');
+        symptomCells.forEach(cell => {
+            cell.dataset.symptomId = "0";
+            cell.innerText = "Симптом";
+        });
+        document.getElementById("filter-guid-container").style.display = "block";
+        document.getElementById("filter-container").style.maxWidth = "800px";
+        loadData();
+    }
+
+    function toggleToNameFilter() {
+        document.getElementById("filter-guid-container").style.display = "none";
+        document.getElementById("filter-name").value = "";
+        document.getElementById("filter-name-container").style.display = "block";
+        document.getElementById("filter-container").style.maxWidth = "300px";
+        loadData();
+    }
+</script>

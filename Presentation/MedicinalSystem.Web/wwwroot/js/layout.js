@@ -1,5 +1,5 @@
 ﻿const accountLink = document.querySelector('a[href="/Home/Auth"]');
-const accountLinkText = localStorage.getItem('accountLinkText');
+const accountLinkText = localStorage.getItem('userName');
 
 // Проверяем, что ссылка найдена
 if (accountLink && accountLinkText) {

@@ -1,37 +1,230 @@
-﻿table {
-    width: 80%; /* Устанавливаем ширину таблицы */
-    margin: 20px auto; /* Центрируем таблицу на странице */
+﻿body {
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: #eaeaea;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+}
+
+a {
+    background: linear-gradient(45deg, #58a6ff, #2e7d32);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+}
+
+    a:hover {
+        background: linear-gradient(45deg, #ff7a00, #f50057);
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+#result {
+    background-color: #333;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #f0f0f0;
+}
+
+button {
+    background-color: #444;
+    color: #fff;
+    padding: 10px 20px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    button:hover {
+        background-color: #58a6ff;
+    }
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="date"] {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+    input[type="date"]:focus {
+        border-color: #58a6ff;
+    }
+
+table {
+    width: 80%;
+    margin: 20px auto;
     border-collapse: collapse;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Добавляем тень */
-    border-radius: 8px; /* Скругляем углы */
-    overflow: hidden; /* Убираем выходы содержимого за границы */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #222;
 }
 
     table caption {
         caption-side: top;
         font-size: 1.5em;
         font-weight: bold;
-        color: #2e7d32;
-        margin-bottom: 10px; /* Увеличим отступ для красоты */
+        color: #58a6ff;
+        margin-bottom: 10px;
         text-align: center;
     }
 
     table th, table td {
-        padding: 10px;
+        padding: 15px;
         text-align: left;
-        border: 1px solid #ccc;
+        border: 1px solid #444;
+        color: #eaeaea;
     }
 
     table tr:nth-child(even) {
-        background-color: #e6f7e6;
+        background-color: #333;
     }
 
     table tr:nth-child(odd) {
-        background-color: #ccebd5;
+        background-color: #222;
     }
 
     table tr:hover {
-        background-color: #a8d3b5;
-        transform: scale(1.005);
-        transition: background-color 0.3s, transform 0.3s;
+        background-color: #444;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+.action-links a {
+    margin-right: 10px;
+}
+
+.action-links form {
+    display: inline-block;
+}
+
+div {
+    margin: 20px;
+}
+
+nav a {
+    margin-right: 15px;
+}
+
+    nav a:hover {
+        color: #1f8dff;
+    }
+
+@media (max-width: 768px) {
+    table {
+        font-size: 0.9rem;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+    }
+}
+
+#filter-container {
+    background: #2c3e50;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 300px;
+    margin: 20px auto;
+    box-sizing: border-box;
+}
+
+    #filter-container label {
+        display: block;
+        color: #fff;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+#filter-name,
+#filter-guid-container .guid-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #58a6ff;
+    border-radius: 4px;
+    background: #34495e;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease, background 0.3s ease;
+    box-sizing: border-box;
+}
+
+    #filter-name:focus {
+        border-color: #ff7a00;
+        background: #2c3e50;
+    }
+
+    #filter-guid-container label {
+        margin-bottom: 0;
+    }
+
+    #filter-guid-container .guid-row {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    #filter-guid-container .guid-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+}
+
+.guid-cell {
+    border: 2px solid #58a6ff; /* Сделаем рамку более заметной */
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #34495e;
+    color: #eaeaea;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+    .guid-cell:hover {
+        background-color: #2c3e50;
+        transform: scale(1.05);
+        border-color: #ff7a00;
+    }
+
+    .guid-cell:focus {
+        outline: none;
+        border-color: #f39c12;
+        background-color: #2c3e50;
+    }
+
+    .guid-cell:active {
+        background-color: #1f2a35;
+        border-color: #d35400;
+        transform: scale(0.95);
     }

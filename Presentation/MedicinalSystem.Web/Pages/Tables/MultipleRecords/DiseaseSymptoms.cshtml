@@ -1,0 +1,17 @@
+﻿@page
+@{
+    Layout = "~/Pages/Shared/Tables.cshtml"; // Указываем путь к макету
+    ViewData["Title"] = "Симптомы и болезни";
+}
+<div id="filter-container">
+    <label for="filter-disease">Disease:</label>
+    <input type="text" id="filter-disease" oninput="applyFilters()">
+
+    <label for="filter-symptom">Symptom:</label>
+    <input type="text" id="filter-symptom" oninput="applyFilters()">
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<script rel="stylesheet" src="~/js/multipleRecords/diseaseSymptoms/get.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/multipleRecords/diseaseSymptoms/edit.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/multipleRecords/diseaseSymptoms/create.js" asp-append-version="true"></script>
+<script rel="stylesheet" src="~/js/multipleRecords/diseaseSymptoms/info.js" asp-append-version="true"></script>
